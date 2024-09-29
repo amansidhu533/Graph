@@ -17,9 +17,9 @@ function ConnectDBModal({ handleCloseModal, handleDBOptionSubmit }) {
     handleCloseModal();
   };
 
-  return (
-    <div className="modal connectDB">
-      <div className="modal-content">
+  return ( 
+  <div className="modal-overlay connectDB">
+  <div className="modal-content">
         <h3>Select DB Connection Method</h3>
         <div>
           <label htmlFor="json-upload">Enter JSON URL</label>

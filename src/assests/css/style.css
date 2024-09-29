@@ -448,7 +448,11 @@ input[type="text"] {
   cursor: pointer;
   color:#0056b3;
 }
-
+button.add-datasource-btn {
+  width: 170px;
+  display: inline-block;
+  align-self: end;
+}
 /* Responsive styles */
 @media (max-width: 768px) {
   .app {

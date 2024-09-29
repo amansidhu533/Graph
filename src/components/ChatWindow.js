@@ -5,7 +5,7 @@ import ConnectDBModal from "./ConnectDBModal";
 import ThemeToggle from "./ThemeToggle";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
-import ResizeWindow from "./ResizeWindow"; 
+import ResizeWindow from "./ResizeWindow";
 import GraphComponent from "./Graph";
 
 function ChatWindow() {
@@ -18,6 +18,7 @@ function ChatWindow() {
     height: "600px",
   });
   const [fileData, setFileData] = useState(null); // State to store selected file data
+  const [showChatActions, setShowChatActions] = useState(false); // New state to toggle chat actions
 
   const handleUploadClick = () => {
     setIsUploadModalOpen(true);
@@ -58,6 +59,11 @@ function ChatWindow() {
 
   const handleFileClick = (data) => {
     setFileData(data); // Set the data for graph rendering
+    setShowChatActions(false); // Hide chat actions when viewing graph
+  };
+
+  const handleAddDataSourceClick = () => {
+    setShowChatActions(true); // Show chat actions on button click
   };
 
   return (
@@ -92,8 +98,13 @@ function ChatWindow() {
           <Sidebar uploadedFiles={uploadedFiles} onFileClick={handleFileClick} />
 
           <div className="chat-window">
+            {/* Always visible "Add New Datasource" button */}
+            <button onClick={handleAddDataSourceClick} className="add-datasource-btn">
+              Add New Datasource
+            </button>
+
             {/* Conditionally render chat-actions or graph */}
-            {!fileData ? (
+            {showChatActions || !fileData ? (
               <div className="message-container">
                 <div className="chat-actions">
                   <button onClick={handleUploadClick} className="submit-btn">

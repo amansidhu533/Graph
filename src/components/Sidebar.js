@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 function Sidebar({ uploadedFiles, onFileClick }) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+    <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="collapse-toggle">
         <button onClick={() => setCollapsed(!collapsed)}>
-          {collapsed ? '→' : '←'}
+          {collapsed ? <ChevronRight /> : <ChevronLeft />}
         </button>
       </div>
-      <div className={`uploaded-files-list ${collapsed ? 'hidden' : ''}`}>
+      <div className={`uploaded-files-list ${collapsed ? "hidden" : ""}`}>
         <h4>Data Source</h4>
         {uploadedFiles && uploadedFiles.length > 0 ? (
           <ul>

@@ -1,12 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --top-bar-bg-color: #ffffff;
   --text-color: #000000;
-  --button-bg-color: #000000;
-  --button-text-color: #ffffff;
-  --button-hover-bg-color: #191a1b;
+  --button-bg-color: #e5e7eb;
+  --button-text-color: #000000;
+  --button-hover-bg-color: #d2d4d8;
   --border-color: #eaeaea;
-  --sidebar-bg: #f4f4f4;
-  --chat-window-bg: #fcf9f9;
+  --sidebar-bg: #f3f4f6;
+  --chat-window-bg: #ffffff;
   --input-border: #ddd;
   --button-hover-bg: #191a1b;
 }
@@ -51,18 +55,21 @@ body.dark-mode {
   gap: 10px;
 }
 
-.toggle-theme-btn,
+.theme-toggle-btn,
 .resize-btn {
-  padding: 8px 16px;
+  padding: 0 16px;
   border: none;
-  cursor: pointer;
-  background-color: var(--button-bg-color);
-  color: var(--button-text-color);
-  border-radius: 5px;
+  line-height: 35px;
+  height: 35px;
+  background-color: #fff;
+  color: #1f2937;
+  border-radius: 30px;
+  display: flex;
   transition: background-color 0.3s;
+  align-items: center;
 }
 
-.toggle-theme-btn:hover,
+.theme-toggle-btn:hover,
 .resize-btn:hover {
   background-color: var(--button-hover-bg-color);
 }
@@ -187,7 +194,7 @@ h2 {
   justify-content: space-between;
   align-items: center;
   border-radius: 20px 20px 0 0;
-  background: #d3d3d3;
+  background: #e5e7eb;
 }
 
 /* Main content section: Sidebar and ChatWindow */
@@ -198,20 +205,16 @@ h2 {
   overflow: hidden;
 }
 
-/* ChatWindow.css */
-.chat-window {
-  padding: 20px;
-  margin: 0 auto;
-  background-color: var(--chat-window-bg);
-  border-radius: 0 0 20px 0;
-}
 
+
+.dark-mode .top-bar {
+  background-color: #374151;
+}
 .dark-mode .chat-window {
-  background-color: #656565;
+  background-color: #1f2937;
 }
-
 .dark-mode .sidebar {
-  background-color: #292929;
+  background-color: #374151;
 }
 
 .sidebar {
@@ -234,7 +237,6 @@ h2 {
 /* Chat window styles */
 .chat-window {
   flex: 1;
-  padding: 20px;
   background-color: var(--chat-window-bg);
   display: flex;
   flex-direction: column;
@@ -247,11 +249,14 @@ h2 {
   align-items: center;
   justify-content: center;
   height: 90%;
+  padding: 20px;
 }
 
 .input-section {
   display: flex;
   gap: 10px;
+  border-top: #e5e7eb solid 1px;
+  padding: 20px;
 }
 
 .input-section input[type="text"] {
@@ -260,6 +265,7 @@ h2 {
   border: 1px solid var(--input-border);
   border-radius: 4px;
   margin: 0;
+  border-radius: 30px;
 }
 
 button {
@@ -331,15 +337,33 @@ button:hover {
   align-items: center;
 }
 
-.submit-btn,
+/* .submit-btn,
 .cancel-btn {
   padding: 10px 20px;
   cursor: pointer;
   border: none;
   border-radius: 5px;
+} */
+.submit-btn,
+.cancel-btn {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  background: #e5e7eb;
+  border-radius: 5px;
+  color: #000;
+  font-size: 16px;
+  height: 50px;
+  -tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.submit-btn {
+.submit-btn:hover,
+.cancel-btn:hover {
+  background-color: #93c5fd;
+}
+
+/* .submit-btn {
   background-color: #28a745;
   color: white;
 }
@@ -347,7 +371,7 @@ button:hover {
 .cancel-btn {
   background-color: #dc3545;
   color: white;
-}
+} */
 
 input[type="file"],
 input[type="text"] {
@@ -446,13 +470,16 @@ input[type="text"] {
 .uploaded-files-list ul li {
   list-style: none;
   cursor: pointer;
-  color:#0056b3;
+  color: #0056b3;
 }
+
 button.add-datasource-btn {
   width: 170px;
   display: inline-block;
   align-self: end;
+  margin: 20px;
 }
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .app {

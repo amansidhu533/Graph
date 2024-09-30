@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect } from "react"; 
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { Moon, Sun } from "lucide-react";
 
 function ThemeToggle() {
   const [darkMode, setDarkMode] = useState(false);
@@ -17,11 +17,11 @@ function ThemeToggle() {
     <button onClick={() => setDarkMode(!darkMode)} className="theme-toggle-btn">
       {darkMode ? (
         <>
-          <FontAwesomeIcon icon={faSun} />
+          <Sun />
         </>
       ) : (
         <>
-          <FontAwesomeIcon icon={faMoon} />
+          <Moon/>
         </>
       )}
     </button>

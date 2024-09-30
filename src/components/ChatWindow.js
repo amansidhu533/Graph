@@ -125,6 +125,7 @@ function ChatWindow() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type your message"
+                className="w-full py-3 px-4 pr-12 rounded-full border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
               />
               <button onClick={sendMessage}>Send</button>
             </div>

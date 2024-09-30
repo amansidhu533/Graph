@@ -210,9 +210,11 @@ h2 {
 .dark-mode .top-bar {
   background-color: #374151;
 }
+
 .dark-mode .chat-window {
   background-color: #1f2937;
 }
+
 .dark-mode .sidebar {
   background-color: #374151;
 }
@@ -378,7 +380,7 @@ input[type="text"] {
   margin: 10px 0;
   padding: 1.5%;
   width: 96%;
-  height: 20px;
+  height: 51px;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
@@ -477,16 +479,35 @@ button.add-datasource-btn {
   width: 170px;
   display: inline-block;
   align-self: end;
- font-size: 14px;
+  font-size: 14px;
   margin: 20px;
 }
-.text-area-container{
-flex: 1 1;
-    padding: 10px;
-    border: 1px solid var(--input-border);
-    margin: 0;
-    border-radius: 30px;
+
+.text-area-container {
+  flex: 1 1;
+  padding: 10px;
+  border: 1px solid var(--input-border);
+  margin: 0;
+  display: flex;
+  border-radius: 30px;
+  align-items: center;
+  justify-content: space-between;
 }
+
+.text-area-container textarea {
+  height: 40px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px 0 0 10px;
+}
+
+.text-area-container button {
+
+  border-radius: 30px;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .app {

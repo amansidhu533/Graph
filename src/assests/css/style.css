@@ -477,9 +477,16 @@ button.add-datasource-btn {
   width: 170px;
   display: inline-block;
   align-self: end;
+ font-size: 14px;
   margin: 20px;
 }
-
+.text-area-container{
+flex: 1 1;
+    padding: 10px;
+    border: 1px solid var(--input-border);
+    margin: 0;
+    border-radius: 30px;
+}
 /* Responsive styles */
 @media (max-width: 768px) {
   .app {

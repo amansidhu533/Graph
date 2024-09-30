@@ -19,6 +19,8 @@ function ChatWindow() {
   });
   const [fileData, setFileData] = useState(null); // State to store selected file data
   const [showChatActions, setShowChatActions] = useState(false); // New state to toggle chat actions
+  const [textArea1, setTextArea1] = useState(''); // State for first text area
+  const [textArea2, setTextArea2] = useState(''); // State for second text area
 
   const handleUploadClick = () => {
     setIsUploadModalOpen(true);
@@ -33,7 +35,10 @@ function ChatWindow() {
   };
 
   const handleFileSubmit = (fileName, parsedData) => {
-    setUploadedFiles((prevFiles) => [...prevFiles, { fileName, data: parsedData }]);
+    setUploadedFiles((prevFiles) => [
+      ...prevFiles,
+      { fileName, data: parsedData },
+    ]);
     setIsUploadModalOpen(false);
   };
 
@@ -66,6 +71,18 @@ function ChatWindow() {
     setShowChatActions(true); // Show chat actions on button click
   };
 
+  // Handler for the first text area button
+  const handleTextArea1Submit = () => {
+    console.log(`Text Area 1 content: ${textArea1}`);
+    setTextArea1(''); // Clear the text area after submit
+  };
+
+  // Handler for the second text area button
+  const handleTextArea2Submit = () => {
+    console.log(`Text Area 2 content: ${textArea2}`);
+    setTextArea2(''); // Clear the text area after submit
+  };
+
   return (
     <Resizable
       size={windowSize}
@@ -95,11 +112,17 @@ function ChatWindow() {
         </div>
 
         <div className="main-content">
-          <Sidebar uploadedFiles={uploadedFiles} onFileClick={handleFileClick} />
+          <Sidebar
+            uploadedFiles={uploadedFiles}
+            onFileClick={handleFileClick}
+          />
 
           <div className="chat-window">
             {/* Always visible "Add New Datasource" button */}
-            <button onClick={handleAddDataSourceClick} className="add-datasource-btn">
+            <button
+              onClick={handleAddDataSourceClick}
+              className="add-datasource-btn"
+            >
               Add New Datasource
             </button>
 
@@ -118,16 +141,21 @@ function ChatWindow() {
             ) : (
               <GraphComponent data={fileData} /> // Display graph when file is clicked
             )}
+ 
 
-            <div className="input-section">
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type your message"
-                className="w-full py-3 px-4 pr-12 rounded-full border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              />
-              <button onClick={sendMessage}>Send</button>
+            {/* Pair of text areas and buttons */}
+            <div className="input-section"> 
+              <div className="text-area-container">
+                <textarea
+                  value={textArea1}
+                  onChange={(e) => setTextArea1(e.target.value)}
+                  placeholder="Enter text for Text Area 1..."
+                  rows="4"
+                  cols="50"
+                />
+                <button onClick={handleTextArea1Submit}>Send</button>
+              </div>
+ 
             </div>
 
             {isUploadModalOpen && (

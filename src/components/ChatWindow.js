@@ -7,6 +7,7 @@ import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import ResizeWindow from "./ResizeWindow";
 import GraphComponent from "./Graph";
+import { Send } from 'lucide-react';
 
 function ChatWindow() {
   const [message, setMessage] = useState("");
@@ -149,11 +150,13 @@ function ChatWindow() {
                 <textarea
                   value={textArea1}
                   onChange={(e) => setTextArea1(e.target.value)}
-                  placeholder="Enter text for Text Area 1..."
+                  placeholder="Ask a query..."
                   rows="4"
                   cols="50"
                 />
-                <button onClick={handleTextArea1Submit}>Send</button>
+                <button onClick={handleTextArea1Submit}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg></button>
               </div>
  
             </div>

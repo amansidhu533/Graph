@@ -13,12 +13,24 @@ function UploadModal({ handleCloseModal, handleFileSubmit }) {
     setFileTypeError('');
 
     if (file) {
-      if (file.type === 'text/csv') {
+      if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
         const reader = new FileReader();
         reader.onload = function (event) {
           const csv = event.target.result;
-          const parsedData = Papa.parse(csv, { header: true });
-          setFilePreview(parsedData.data);
+
+          // Parse the CSV with enhanced options
+          Papa.parse(csv, {
+            header: true,           // Attempt to parse with headers
+            skipEmptyLines: true,    // Ignore empty lines
+            dynamicTyping: true,     // Auto-detect number and boolean types
+            complete: function (results) {
+              setFilePreview(results.data);
+            },
+            error: function (error) {
+              setFilePreview(null);
+              setFileTypeError('Error parsing CSV file: ' + error.message);
+            }
+          });
         };
         reader.readAsText(file);
       } else if (file.name.endsWith('.xlsx')) {
@@ -59,29 +71,29 @@ function UploadModal({ handleCloseModal, handleFileSubmit }) {
             <h4>File Preview:</h4>
             {filePreview ? (
               <div className="preview-content">
-              {Array.isArray(filePreview) ? (
-                <table cellSpacing={0} cellPadding={3}>
-                  <thead>
-                    <tr>
-                      {Object.keys(filePreview[0] || {}).map((key) => (
-                        <th key={key}>{key}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filePreview.map((row, index) => (
-                      <tr key={index}>
-                        {Object.values(row).map((value, idx) => (
-                          <td key={idx}>{value}</td>
+                {Array.isArray(filePreview) && filePreview.length > 0 ? (
+                  <table cellSpacing={0} cellPadding={3}>
+                    <thead>
+                      <tr>
+                        {Object.keys(filePreview[0] || {}).map((key) => (
+                          <th key={key}>{key}</th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>{filePreview}</p>
-              )}
-            </div>
+                    </thead>
+                    <tbody>
+                      {filePreview.map((row, index) => (
+                        <tr key={index}>
+                          {Object.values(row).map((value, idx) => (
+                            <td key={idx}>{value !== undefined ? value : '-'}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No data available in CSV</p>
+                )}
+              </div>
             ) : (
               <p>No preview available</p>
             )}

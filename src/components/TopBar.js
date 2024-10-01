@@ -5,7 +5,7 @@ import ResizeWindow from "./ResizeWindow";
 function TopBar({ onToggleTheme, onResizeWindow }) {
   return (
     <div className="top-bar">
-      <h1 className="heading">Chat Application</h1>
+      <h2 className="heading">Chat Application</h2>
       <div className="top-bar-buttons">
         <ThemeToggle />
         <ResizeWindow />

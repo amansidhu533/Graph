@@ -105,7 +105,7 @@ function ChatWindow() {
     >
       <div className="chat-window-container">
         <div className="top-bar">
-          <h1 className="heading">Assistant</h1>
+          <h2 className="heading">Assistant</h2>
           <div className="top-bar-buttons">
             <ThemeToggle />
             <ResizeWindow setWindowSize={setWindowSize} />

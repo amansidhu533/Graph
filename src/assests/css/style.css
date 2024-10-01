@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --top-bar-bg-color: #ffffff;
+  --top-bar-bg-color: #e5e7eb;
   --text-color: #000000;
   --button-bg-color: #e5e7eb;
   --button-text-color: #000000;
@@ -19,6 +19,34 @@ body.dark-mode {
   background-color: #121212;
   color: #ffffff;
 }
+
+
+/* For WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1f2937;
+}
+
+/* For Firefox */
+.scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #1f2937 #f1f1f1;
+}
+
 
 .app {
   display: flex;
@@ -39,17 +67,21 @@ body.dark-mode {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 15px 20px;
   background-color: var(--top-bar-bg-color);
   color: var(--text-color);
   border-bottom: 2px solid var(--border-color);
+  border-radius: 20px 20px 0 0;
 }
 
+ 
 .heading {
   font-size: 24px;
-  margin: 0;
+  margin: 0; 
 }
-
+.dark-mode .heading { 
+  color: #fff;
+}
 .top-bar-buttons {
   display: flex;
   gap: 10px;
@@ -186,16 +218,6 @@ h2 {
   width: 100%;
 }
 
-/* TopBar styles */
-.top-bar {
-  background-color: var(--top-bar-bg-color);
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 20px 20px 0 0;
-  background: #e5e7eb;
-}
 
 /* Main content section: Sidebar and ChatWindow */
 .main-content {
@@ -380,7 +402,7 @@ input[type="text"] {
   margin: 10px 0;
   padding: 1.5%;
   width: 96%;
-  height: 51px;
+  height: 56px;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
@@ -393,6 +415,7 @@ input[type="text"] {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
+  overflow: auto;
   /* Dim background */
   display: flex;
   justify-content: center;
@@ -442,7 +465,11 @@ input[type="text"] {
 .modal-footer button {
   margin-left: 10px;
 }
-
+.file-preview {
+  margin: 20px 0 0 0;
+  height: 400px;
+  overflow: auto;
+}
 .preview-content {
   width: 100%;
 
@@ -478,13 +505,17 @@ input[type="text"] {
   text-transform: lowercase;
   transition: all 0.5s ease-in-out;
 }
-
+.dark-mode .uploaded-files-list ul li{
+  color: #fff;
+}
 .uploaded-files-list ul li:hover {
   border-radius: 0 10px 10px 10px;
   box-shadow: 3px 3px 10px 0 #0000001c;
   background: #fff;
 }
-
+.dark-mode .uploaded-files-list ul li:hover {
+  color: #000;
+}
 button.add-datasource-btn {
   width: 170px;
   display: inline-block;
@@ -510,7 +541,9 @@ button.add-datasource-btn {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  background-color: transparent;
   padding: 5px 0 0 10px;
+  outline: none;
 }
 
 .text-area-container button {

@@ -178,7 +178,7 @@ function GraphComponent({ data }) {
           <Save size={20} /> 
         </button>
       </div>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={300}>
         {renderChart()}
       </ResponsiveContainer>
     </div>

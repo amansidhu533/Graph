@@ -47,16 +47,17 @@ function GraphComponent({ data }) {
       case "Bar":
         return (
           <BarChart
-            data={formattedData}
-            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="product" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="unitPrice" fill="#82ca9d" />
-          </BarChart>
+          data={formattedData}
+          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="product" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="unitPrice" fill="#28a745" radius={[7, 7, 0, 0]} />
+        </BarChart>
+        
         );
       case "Line":
         return (

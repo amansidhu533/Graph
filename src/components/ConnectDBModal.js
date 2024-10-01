@@ -17,12 +17,12 @@ function ConnectDBModal({ handleCloseModal, handleDBOptionSubmit }) {
     handleCloseModal();
   };
 
-  return ( 
-  <div className="modal-overlay connectDB">
-  <div className="modal-content">
-        <h3>Select DB Connection Method</h3>
+  return (
+    <div className="modal-overlay connectDB">
+      <div className="modal-content">
+        <h2>Select DB Connection Method</h2>
         <div>
-          <label htmlFor="json-upload">Enter JSON URL</label>
+          <label htmlFor="json-input">Enter JSON URL</label>
           <input
             type="text"
             id="json-input"

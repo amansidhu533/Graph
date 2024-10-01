@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; 
+import { fetchFileJsonData } from "../modules";
 
 function ConnectDBModal({ handleCloseModal, handleDBOptionSubmit }) {
   const [json, setJson] = useState("");
@@ -12,9 +13,19 @@ function ConnectDBModal({ handleCloseModal, handleDBOptionSubmit }) {
     setToken(event.target.value);
   };
 
-  const handleSubmit = () => {
-    handleDBOptionSubmit({ json, token });
-    handleCloseModal();
+  const handleSubmit = async () => {
+    try {
+      // Assuming the JSON input is provided as a string and needs to be converted to a Blob
+      const jsonBlob = new Blob([json], { type: "application/json" });
+      const result = await fetchFileJsonData(jsonBlob);
+      console.log("File processed successfully:", result);
+      
+      handleDBOptionSubmit({ json, token });
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error during submission:", error);
+      // You might want to handle the error by displaying a message to the user
+    }
   };
 
   return (

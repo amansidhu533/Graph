@@ -179,31 +179,38 @@ function ChatWindow() {
 
             {/* Text area input section */}
             <div className="input-section">
-              <div className="text-area-container">
-                <textarea
-                  value={textArea1}
-                  onChange={(e) => setTextArea1(e.target.value)}
-                  placeholder="Ask a query..."
-                  rows="4"
-                  cols="50"
-                />
-                <button onClick={handleTextArea1Submit}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    className="w-5 h-5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    />
-                  </svg>
-                </button>
-              </div>
+            <div className="text-area-container">
+  <textarea
+    value={textArea1}
+    onChange={(e) => setTextArea1(e.target.value)}
+    placeholder="Ask a query..."
+    rows="4"
+    cols="50"
+    onKeyDown={(e) => {
+      if (e.key === "Enter" && !e.shiftKey) { // Check if Enter key is pressed without Shift
+        e.preventDefault(); // Prevents adding a new line
+        handleTextArea1Submit(); // Call the submit function
+      }
+    }}
+  />
+  <button onClick={handleTextArea1Submit}>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      className="w-5 h-5"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M14 5l7 7m0 0l-7 7m7-7H3"
+      />
+    </svg>
+  </button>
+</div>
+
             </div>
 
             {isUploadModalOpen && (

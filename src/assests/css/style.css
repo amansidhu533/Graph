@@ -74,14 +74,16 @@ body.dark-mode {
   border-radius: 20px 20px 0 0;
 }
 
- 
+
 .heading {
   font-size: 24px;
-  margin: 0; 
+  margin: 0;
 }
-.dark-mode .heading { 
+
+.dark-mode .heading {
   color: #fff;
 }
+
 .top-bar-buttons {
   display: flex;
   gap: 10px;
@@ -465,11 +467,13 @@ input[type="text"] {
 .modal-footer button {
   margin-left: 10px;
 }
+
 .file-preview {
   margin: 20px 0 0 0;
   height: 400px;
   overflow: auto;
 }
+
 .preview-content {
   width: 100%;
 
@@ -505,17 +509,21 @@ input[type="text"] {
   text-transform: lowercase;
   transition: all 0.5s ease-in-out;
 }
-.dark-mode .uploaded-files-list ul li{
+
+.dark-mode .uploaded-files-list ul li {
   color: #fff;
 }
+
 .uploaded-files-list ul li:hover {
   border-radius: 0 10px 10px 10px;
   box-shadow: 3px 3px 10px 0 #0000001c;
   background: #fff;
 }
+
 .dark-mode .uploaded-files-list ul li:hover {
   color: #000;
 }
+
 button.add-datasource-btn {
   width: 170px;
   display: inline-block;
@@ -579,6 +587,21 @@ button.add-datasource-btn {
   padding: 20px;
   overflow: auto;
   height: 100%;
+}
+
+.submitted-queries-container {
+  padding: 20px;
+  overflow: auto;
+  height: 400px;
+}
+
+.submitted-queries-container li {
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 10px 10px 0 10px;
+  margin: 5px 0 15px 0;
+  font-weight: 500;
+  box-shadow: 3px 2px 4px 0 #0000001c;
 }
 
 .chart-controls {

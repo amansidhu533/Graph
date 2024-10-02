@@ -33,9 +33,10 @@ function Sidebar({ uploadedFiles, onFileClick }) {
         {files && files.length > 0 ? (
           <ul>
             {files.map((file, index) => (
-              <li key={index} onClick={() => onFileClick(file.data)}>
-                {file.fileName}
-              </li>
+              <li key={index} onClick={() => onFileClick(file.data, file.queries)}>
+              {file.fileName}
+            </li>
+            
             ))}
           </ul>
         ) : (

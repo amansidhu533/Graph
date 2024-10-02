@@ -24,11 +24,12 @@ import {
 import { saveAs } from "file-saver";
 import { Save, BarChart as BarIcon, LineChart as LineIcon, PieChart as PieIcon, AreaChart as AreaIcon, Radar as RadarIcon } from "lucide-react";
 
-function GraphComponent({ data }) {
+function GraphComponent({ data = [] }) {
   const [chartType, setChartType] = useState("Bar");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const validData = data.filter((item) => item.Product && item["Unit Price"]);
+  // Ensure data is valid by filtering out any undefined or invalid entries
+  const validData = data.filter((item) => item?.Product && item?.["Unit Price"]);
 
   const formattedData = validData.map((item) => ({
     product: item.Product,
@@ -47,17 +48,16 @@ function GraphComponent({ data }) {
       case "Bar":
         return (
           <BarChart
-          data={formattedData}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="product" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="unitPrice" fill="#28a745" radius={[7, 7, 0, 0]} />
-        </BarChart>
-        
+            data={formattedData}
+            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="product" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="unitPrice" fill="#28a745" radius={[7, 7, 0, 0]} />
+          </BarChart>
         );
       case "Line":
         return (
@@ -186,3 +186,4 @@ function GraphComponent({ data }) {
 }
 
 export default GraphComponent;
+

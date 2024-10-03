@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Papa from 'papaparse';
 import { fetchFileData } from '../modules';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function UploadModal({ handleCloseModal, handleFileSubmit }) {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -29,15 +31,18 @@ function UploadModal({ handleCloseModal, handleFileSubmit }) {
             error: function (error) {
               setFilePreview(null);
               setFileTypeError('Error parsing CSV file: ' + error.message);
+              toast.error('Error parsing CSV file: ' + error.message); // Toast error message
             }
           });
         };
         reader.readAsText(file);
       } else if (file.name.endsWith('.xlsx')) {
         setFilePreview("Preview not available for Excel files.");
+        toast.info('Preview not available for Excel files'); // Info toast message
       } else {
         setFilePreview(null);
         setFileTypeError('Unsupported file type. Please upload a CSV or Excel file.');
+        toast.error('Unsupported file type. Please upload a CSV or Excel file.'); // Error toast
       }
     } else {
       setFilePreview(null);
@@ -49,11 +54,13 @@ function UploadModal({ handleCloseModal, handleFileSubmit }) {
       try {
         const response = await fetchFileData(selectedFile);
         handleFileSubmit(selectedFile.name, filePreview); // Pass parsed data
+        toast.success('File uploaded successfully!'); // Success toast
+        handleCloseModal();
       } catch (error) {
-        alert('Error uploading file. Please try again.');
+        toast.error('Error uploading file. Please try again.'); // Failure toast
       }
     } else {
-      alert('Please upload a file');
+      toast.warn('Please upload a file'); // Warning toast
     }
   };
 

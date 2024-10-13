@@ -19,15 +19,22 @@ function ChatWindow() {
   });
   const [fileData, setFileData] = useState(null);
   const [showChatActions, setShowChatActions] = useState(false);
-  const [textArea1, setTextArea1] = useState("");
-  const [textArea2, setTextArea2] = useState("");
+  const [textArea1, setTextArea1] = useState(""); 
   const [queries, setQueries] = useState([]); // State to store submitted queries
+  const [selectedFileName, setSelectedFileName] = useState("Chat Application");
+
+  useEffect(() => {
+    const savedFileName = localStorage.getItem("selectedFileName");
+    if (savedFileName) {
+      setSelectedFileName(savedFileName);
+    }
+  }, []);
 
   useEffect(() => {
     const savedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
     const updatedFiles = savedFiles.map((file) => ({
       ...file,
-      queries: file.queries || [], // Ensure each file has a queries array
+      queries: file.queries || [],
     }));
     setUploadedFiles(updatedFiles);
   }, []);
@@ -45,7 +52,7 @@ function ChatWindow() {
   };
 
   const handleFileSubmit = (fileName, parsedData) => {
-    const newFile = { fileName, data: parsedData, queries: [] }; // Always add an empty queries array
+    const newFile = { fileName, data: parsedData, queries: [] };
     const updatedFiles = [...uploadedFiles, newFile];
     setUploadedFiles(updatedFiles);
     localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
@@ -71,9 +78,10 @@ function ChatWindow() {
       setMessage("");
     }
   };
-  const handleFileClick = (data, queries) => {
-    setFileData(data);
-    setQueries(queries || []); // Ensure queries defaults to an empty array if not provided
+  const handleFileClick = (data, queries, fileName) => {
+    setFileData(data); 
+    setQueries(queries || []);  
+    setSelectedFileName(fileName);  
     setShowChatActions(false);
   };
 
@@ -85,7 +93,6 @@ function ChatWindow() {
     if (textArea1.trim() && fileData) {
       const updatedFiles = uploadedFiles.map((file) => {
         if (file.data === fileData) {
-          // Add the new query to the selected file
           return {
             ...file,
             queries: [...file.queries, textArea1],
@@ -97,8 +104,8 @@ function ChatWindow() {
       setUploadedFiles(updatedFiles);
       localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
 
-      setQueries((prevQueries) => [...prevQueries, textArea1]); // Update queries in the UI
-      setTextArea1(""); // Clear the input after submission
+      setQueries((prevQueries) => [...prevQueries, textArea1]);
+      setTextArea1("");
     }
   };
 
@@ -123,7 +130,7 @@ function ChatWindow() {
     >
       <div className="chat-window-container">
         <div className="top-bar">
-          <h2 className="heading">Assistant</h2>
+          <h2 className="heading">Assistant for <span>{selectedFileName}</span></h2>
           <div className="top-bar-buttons">
             <ThemeToggle />
             <ResizeWindow setWindowSize={setWindowSize} />

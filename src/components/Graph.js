@@ -22,14 +22,23 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { saveAs } from "file-saver";
-import { Save, BarChart as BarIcon, LineChart as LineIcon, PieChart as PieIcon, AreaChart as AreaIcon, Radar as RadarIcon } from "lucide-react";
+import {
+  Save,
+  BarChart as BarIcon,
+  LineChart as LineIcon,
+  PieChart as PieIcon,
+  AreaChart as AreaIcon,
+  Radar as RadarIcon,
+} from "lucide-react";
 
 function GraphComponent({ data = [] }) {
   const [chartType, setChartType] = useState("Bar");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Ensure data is valid by filtering out any undefined or invalid entries
-  const validData = data.filter((item) => item?.Product && item?.["Unit Price"]);
+  const validData = data.filter(
+    (item) => item?.Product && item?.["Unit Price"]
+  );
 
   const formattedData = validData.map((item) => ({
     product: item.Product,
@@ -152,7 +161,6 @@ function GraphComponent({ data = [] }) {
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             {chartOptions.find((opt) => opt.value === chartType).icon}
-            {chartOptions.find((opt) => opt.value === chartType).label}
           </button>
           {dropdownOpen && (
             <ul className="dropdown-list">
@@ -168,14 +176,13 @@ function GraphComponent({ data = [] }) {
                   }`}
                 >
                   {option.icon}
-                  {option.label}
                 </li>
               ))}
             </ul>
           )}
         </div>
         <button onClick={handleSave} className="save-button">
-          <Save size={20} /> 
+          <Save size={20} />
         </button>
       </div>
       <ResponsiveContainer width="100%" height={300}>
@@ -186,4 +193,3 @@ function GraphComponent({ data = [] }) {
 }
 
 export default GraphComponent;
-

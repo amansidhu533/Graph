@@ -7,6 +7,7 @@ import Sidebar from "./Sidebar";
 import ResizeWindow from "./ResizeWindow";
 import GraphComponent from "./Graph";
 import AddDataSource from "../assests/images/add_datasource.png";
+import DBConnect from "../assests/images/db-connect.png";
 
 function ChatWindow() {
   const [message, setMessage] = useState("");
@@ -24,6 +25,7 @@ function ChatWindow() {
   const [selectedFileName, setSelectedFileName] = useState("Chat Application");
   const [previousChatContext, setPreviousChatContext] = useState(null);
   const [isNewChat, setIsNewChat] = useState(false);
+  const [databaseName, setDatabaseName] = useState("My Database");
 
   useEffect(() => {
     const savedFileName = localStorage.getItem("selectedFileName");
@@ -173,6 +175,9 @@ function ChatWindow() {
             Assistant for <span>{selectedFileName}</span>
           </h2>
           <div className="top-bar-buttons">
+            <span className="db-connect" title={databaseName}>  
+              <img src={DBConnect} alt="DB Connection" />
+            </span>
             <ThemeToggle />
             <ResizeWindow setWindowSize={setWindowSize} />
           </div>

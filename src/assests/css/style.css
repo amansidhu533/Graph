@@ -95,6 +95,16 @@ h2.heading span {
   gap: 10px;
 }
 
+.db-connect {
+  display: flex;
+  height: 35px;
+  align-items: center;
+}
+
+.db-connect img {
+  height: 30px;
+}
+
 .theme-toggle-btn,
 .resize-btn {
   padding: 0 16px;
@@ -288,7 +298,7 @@ h2 {
   display: flex;
   gap: 10px;
   border-top: #e5e7eb solid 1px;
-  padding:10px 20px;
+  padding: 10px 20px;
 }
 
 .input-section input[type="text"] {
@@ -548,7 +558,7 @@ button.add-datasource-btn img {
 
 .text-area-container {
   flex: 1 1;
-  padding:5px 10px;
+  padding: 5px 10px;
   border: 1px solid var(--input-border);
   margin: 0;
   display: flex;
@@ -564,7 +574,7 @@ button.add-datasource-btn img {
   align-items: center;
   justify-content: flex-start;
   background-color: transparent;
-  padding:5px 0 5px 10px;
+  padding: 5px 0 5px 10px;
   outline: none;
 }
 

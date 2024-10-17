@@ -4,9 +4,9 @@ import UploadModal from "./UploadModal";
 import ConnectDBModal from "./ConnectDBModal";
 import ThemeToggle from "./ThemeToggle";
 import Sidebar from "./Sidebar";
-import TopBar from "./TopBar";
 import ResizeWindow from "./ResizeWindow";
 import GraphComponent from "./Graph";
+import AddDataSource from "../assests/images/add_datasource.png";
 
 function ChatWindow() {
   const [message, setMessage] = useState("");
@@ -19,9 +19,11 @@ function ChatWindow() {
   });
   const [fileData, setFileData] = useState(null);
   const [showChatActions, setShowChatActions] = useState(false);
-  const [textArea1, setTextArea1] = useState(""); 
-  const [queries, setQueries] = useState([]); // State to store submitted queries
+  const [textArea1, setTextArea1] = useState("");
+  const [queries, setQueries] = useState([]);
   const [selectedFileName, setSelectedFileName] = useState("Chat Application");
+  const [previousChatContext, setPreviousChatContext] = useState(null);
+  const [isNewChat, setIsNewChat] = useState(false);
 
   useEffect(() => {
     const savedFileName = localStorage.getItem("selectedFileName");
@@ -78,24 +80,60 @@ function ChatWindow() {
       setMessage("");
     }
   };
+
   const handleFileClick = (data, queries, fileName) => {
-    setFileData(data); 
-    setQueries(queries || []);  
-    setSelectedFileName(fileName);  
+    console.log("File clicked:", fileName); // Log the clicked file name
+    console.log("Data:", data); // Log the data associated with the clicked file
+    console.log("Queries:", queries); // Log the queries associated with the clicked file
+
+    // Set the previous chat context for reference
+    setPreviousChatContext({ fileData, queries, selectedFileName });
+
+    // Load the selected chat data and set the appropriate state
+    setFileData(data);
+    setQueries(queries || []); // Make sure queries are loaded when chat is selected
+    setSelectedFileName(fileName);
+
+    // Hide chat actions and mark it as not a new chat
     setShowChatActions(false);
+    setIsNewChat(false);
+  };
+
+  const handleNewChatClick = () => {
+    // Store the linked chat name only once
+    const linkedChatName = `${selectedFileName} → New Chat`;
+
+    // Add a new entry to uploadedFiles for the new chat (avoid duplicate name creation)
+    const newChat = {
+      fileName: linkedChatName,
+      data: null,
+      queries: previousChatContext ? previousChatContext.queries : [], // Include previous chat queries if they exist
+    };
+
+    const updatedFiles = [...uploadedFiles, newChat];
+    setUploadedFiles(updatedFiles);
+    localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
+
+    // Clear the current chat data and mark it as a new chat
+    setFileData(null);
+    setQueries(newChat.queries); // Set queries to the new chat's queries
+    setSelectedFileName(linkedChatName); // Set the new chat's name here
+    setShowChatActions(true); // Show chat actions
+    setIsNewChat(true); // Flag as new chat
   };
 
   const handleAddDataSourceClick = () => {
     setShowChatActions(true);
+    setIsNewChat(false);
   };
 
   const handleTextArea1Submit = () => {
-    if (textArea1.trim() && fileData) {
+    if (textArea1.trim()) {
       const updatedFiles = uploadedFiles.map((file) => {
-        if (file.data === fileData) {
+        if (file.fileName === selectedFileName) {
           return {
             ...file,
-            queries: [...file.queries, textArea1],
+            queries: [...file.queries, textArea1], // Append the new query
           };
         }
         return file;
@@ -104,8 +142,9 @@ function ChatWindow() {
       setUploadedFiles(updatedFiles);
       localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
 
-      setQueries((prevQueries) => [...prevQueries, textArea1]);
-      setTextArea1("");
+      setQueries((prevQueries) => [...prevQueries, textArea1]); // Update the current chat queries
+
+      setTextArea1(""); // Clear the text area after submission
     }
   };
 
@@ -130,7 +169,9 @@ function ChatWindow() {
     >
       <div className="chat-window-container">
         <div className="top-bar">
-          <h2 className="heading">Assistant for <span>{selectedFileName}</span></h2>
+          <h2 className="heading">
+            Assistant for <span>{selectedFileName}</span>
+          </h2>
           <div className="top-bar-buttons">
             <ThemeToggle />
             <ResizeWindow setWindowSize={setWindowSize} />
@@ -140,7 +181,8 @@ function ChatWindow() {
         <div className="main-content">
           <Sidebar
             uploadedFiles={uploadedFiles}
-            onFileClick={handleFileClick}
+            onFileClick={handleFileClick} // Ensure this is passed correctly
+            onNewChatClick={handleNewChatClick}
           />
 
           <div className="chat-window">
@@ -148,21 +190,27 @@ function ChatWindow() {
               onClick={handleAddDataSourceClick}
               className="add-datasource-btn"
             >
-              Add New Datasource
+              <img src={AddDataSource} alt="Add DataSource" />
             </button>
 
-            {showChatActions || !fileData ? (
+            {showChatActions ? (
               <div className="message-container">
-                <div className="chat-actions">
-                  <button onClick={handleUploadClick} className="submit-btn">
-                    Upload CSV/Excel
-                  </button>
-                  <button onClick={handleDBClick} className="cancel-btn">
-                    Connect DB
-                  </button>
-                </div>
+                {isNewChat && previousChatContext ? (
+                  <p className="previous-chat-info">
+                    Previous Chat: {previousChatContext.selectedFileName}
+                  </p>
+                ) : (
+                  <div className="chat-actions">
+                    <button onClick={handleUploadClick} className="submit-btn">
+                      Upload CSV/Excel
+                    </button>
+                    <button onClick={handleDBClick} className="cancel-btn">
+                      Connect DB
+                    </button>
+                  </div>
+                )}
               </div>
-            ) : (
+            ) : fileData ? (
               <>
                 <GraphComponent data={fileData} />
                 <div className="submitted-queries-container">
@@ -179,9 +227,12 @@ function ChatWindow() {
                   )}
                 </div>
               </>
+            ) : (
+              <div className="message-container">
+                <p>Please select a data source or add a new one.</p>
+              </div>
             )}
 
-            {/* Text area input section */}
             <div className="input-section">
               <div className="text-area-container">
                 <textarea
@@ -192,9 +243,8 @@ function ChatWindow() {
                   cols="50"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
-                      // Check if Enter key is pressed without Shift
-                      e.preventDefault(); // Prevents adding a new line
-                      handleTextArea1Submit(); // Call the submit function
+                      e.preventDefault();
+                      handleTextArea1Submit();
                     }
                   }}
                 />

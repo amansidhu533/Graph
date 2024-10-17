@@ -1,41 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft, PlusCircle } from "lucide-react";
 
-function Sidebar({ uploadedFiles, onFileClick }) {
+function Sidebar({ uploadedFiles, onFileClick, onNewChatClick }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [files, setFiles] = useState([]);
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
 
   useEffect(() => {
-    const savedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
-    setFiles(savedFiles);
-
-    const savedFileName = localStorage.getItem("selectedFileName");
-    if (savedFileName) {
-      const selectedIndex = savedFiles.findIndex(
-        (file) => file.fileName === savedFileName
-      );
-      setSelectedFileIndex(selectedIndex);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (uploadedFiles && uploadedFiles.length > 0) {
-      localStorage.setItem("uploadedFiles", JSON.stringify(uploadedFiles));
-      setFiles(uploadedFiles);
-    }
+    // Instead of setting files from localStorage, just use uploadedFiles
+    setSelectedFileIndex(null); // Reset the selected file index
   }, [uploadedFiles]);
 
   const handleFileClick = (file, index) => {
     setSelectedFileIndex(index);
     localStorage.setItem("selectedFileName", file.fileName);
-    onFileClick(file.data, file.queries, file.fileName); // Pass file name along with data and queries
+    // Ensure that we're passing the correct attributes
+    onFileClick(file.data, file.queries, file.fileName);
   };
 
   const handleNewChatClick = () => {
     setSelectedFileIndex(null); // Deselect any file
     localStorage.removeItem("selectedFileName"); // Clear saved file
-    onFileClick(null, [], "New Chat"); // Send empty data to ChatWindow
+    onNewChatClick(); // Trigger the function to link the previous chat context
   };
 
   return (
@@ -59,12 +44,12 @@ function Sidebar({ uploadedFiles, onFileClick }) {
       </div>
 
       <div className={`uploaded-files-list ${collapsed ? "hidden" : ""}`}>
-        {files && files.length > 0 ? (
-          <ul>
-            {files.map((file, index) => (
+        {uploadedFiles && uploadedFiles.length > 0 ? (
+          <ul className="file-list">
+            {uploadedFiles.map((file, index) => (
               <li
                 key={index}
-                onClick={() => handleFileClick(file, index)}
+                onClick={() => handleFileClick(file, index)} // Ensure proper parameters are passed
                 className={selectedFileIndex === index ? "selected" : ""}
               >
                 {file.fileName}

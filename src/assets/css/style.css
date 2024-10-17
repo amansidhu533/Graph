@@ -107,7 +107,8 @@ h2.heading span {
 }
 
 .theme-toggle-btn,
-.resize-btn, .db-connect {
+.resize-btn,
+.db-connect {
   padding: 0 16px;
   border: none;
   line-height: 35px;
@@ -641,7 +642,8 @@ button.add-datasource-btn img {
   padding: 5px 10px;
   border-radius: 12px 12px 12px 0;
   margin: 5px 0 10px 0;
-  font-weight: 500;
+  font-weight: 400;
+  font-size: 14px;
   box-shadow: 3px 2px 4px 0 #0000001c;
 }
 

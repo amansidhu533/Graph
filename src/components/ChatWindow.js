@@ -78,8 +78,20 @@ function ChatWindow() {
 
   const sendMessage = () => {
     if (message.trim()) {
-      console.log(`Message sent: ${message}`);
-      setMessage("");
+      const updatedFiles = uploadedFiles.map((file) => {
+        if (file.fileName === selectedFileName) {
+          return {
+            ...file,
+            queries: [...file.queries, message],
+          };
+        }
+        return file;
+      });
+
+      setUploadedFiles(updatedFiles);
+      localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
+      setQueries((prevQueries) => [...prevQueries, message]);
+      setMessage(""); // Clear the input after sending the message
     }
   };
 
@@ -208,9 +220,9 @@ function ChatWindow() {
                   </div>
                 )}
               </div>
-            ) : fileData ? (
+            ) : fileData || queries.length ? (
               <>
-                <GraphComponent data={fileData} />
+                {fileData && <GraphComponent data={fileData} />}
                 <div className="submitted-queries-container">
                   {queries.length > 0 ? (
                     <ul>
@@ -230,6 +242,7 @@ function ChatWindow() {
                 <p>Please select a data source or add a new one.</p>
               </div>
             )}
+
 
             <div className="input-section">
               <div className="text-area-container">

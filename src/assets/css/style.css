@@ -283,6 +283,7 @@ h2 {
   background-color: var(--chat-window-bg);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
 .message-container,
@@ -622,7 +623,8 @@ button.add-datasource-btn img {
 .submitted-queries-container {
   padding: 20px;
   overflow: auto;
-  height: 400px;
+  /* height: 400px; */
+  height: 100%;
   display: flex;
   align-items: flex-end;
 }

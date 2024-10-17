@@ -99,6 +99,7 @@ h2.heading span {
   display: flex;
   height: 35px;
   align-items: center;
+
 }
 
 .db-connect img {
@@ -106,7 +107,7 @@ h2.heading span {
 }
 
 .theme-toggle-btn,
-.resize-btn {
+.resize-btn, .db-connect {
   padding: 0 16px;
   border: none;
   line-height: 35px;

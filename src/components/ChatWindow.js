@@ -6,8 +6,8 @@ import ThemeToggle from "./ThemeToggle";
 import Sidebar from "./Sidebar";
 import ResizeWindow from "./ResizeWindow";
 import GraphComponent from "./Graph";
-import AddDataSource from "../assests/images/add_datasource.png";
-import DBConnect from "../assests/images/db-connect.png";
+import AddDataSource from "../assets/images/add_datasource.png";
+import DBConnect from "../assets/images/database-connect1.gif";
 
 function ChatWindow() {
   const [message, setMessage] = useState("");
@@ -83,45 +83,40 @@ function ChatWindow() {
     }
   };
 
+  // Handle file selection (existing chat)
   const handleFileClick = (data, queries, fileName) => {
-    console.log("File clicked:", fileName); // Log the clicked file name
-    console.log("Data:", data); // Log the data associated with the clicked file
-    console.log("Queries:", queries); // Log the queries associated with the clicked file
-
-    // Set the previous chat context for reference
     setPreviousChatContext({ fileData, queries, selectedFileName });
 
-    // Load the selected chat data and set the appropriate state
-    setFileData(data);
-    setQueries(queries || []); // Make sure queries are loaded when chat is selected
+    const selectedQueries = queries || [];
+    const selectedData = data || null;
+
+    setFileData(selectedData);
+    setQueries(selectedQueries);
     setSelectedFileName(fileName);
 
-    // Hide chat actions and mark it as not a new chat
     setShowChatActions(false);
     setIsNewChat(false);
   };
 
+  // Handle new chat creation
   const handleNewChatClick = () => {
-    // Store the linked chat name only once
     const linkedChatName = `${selectedFileName} → New Chat`;
-
-    // Add a new entry to uploadedFiles for the new chat (avoid duplicate name creation)
     const newChat = {
       fileName: linkedChatName,
       data: null,
-      queries: previousChatContext ? previousChatContext.queries : [], // Include previous chat queries if they exist
+      queries: previousChatContext ? previousChatContext.queries : [],
     };
 
+    // Ensure the new chat is appended and visible in the sidebar
     const updatedFiles = [...uploadedFiles, newChat];
     setUploadedFiles(updatedFiles);
     localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
 
-    // Clear the current chat data and mark it as a new chat
     setFileData(null);
-    setQueries(newChat.queries); // Set queries to the new chat's queries
-    setSelectedFileName(linkedChatName); // Set the new chat's name here
-    setShowChatActions(true); // Show chat actions
-    setIsNewChat(true); // Flag as new chat
+    setQueries(newChat.queries);
+    setSelectedFileName(linkedChatName);
+    setShowChatActions(false); // Hide actions when new chat is selected
+    setIsNewChat(true);
   };
 
   const handleAddDataSourceClick = () => {
@@ -135,7 +130,7 @@ function ChatWindow() {
         if (file.fileName === selectedFileName) {
           return {
             ...file,
-            queries: [...file.queries, textArea1], // Append the new query
+            queries: [...file.queries, textArea1],
           };
         }
         return file;
@@ -143,10 +138,8 @@ function ChatWindow() {
 
       setUploadedFiles(updatedFiles);
       localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
-
-      setQueries((prevQueries) => [...prevQueries, textArea1]); // Update the current chat queries
-
-      setTextArea1(""); // Clear the text area after submission
+      setQueries((prevQueries) => [...prevQueries, textArea1]);
+      setTextArea1("");
     }
   };
 
@@ -175,7 +168,7 @@ function ChatWindow() {
             Assistant for <span>{selectedFileName}</span>
           </h2>
           <div className="top-bar-buttons">
-            <span className="db-connect" title={databaseName}>  
+            <span className="db-connect" title={databaseName}>
               <img src={DBConnect} alt="DB Connection" />
             </span>
             <ThemeToggle />

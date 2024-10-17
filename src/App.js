@@ -1,7 +1,6 @@
-import React from 'react';
-import Sidebar from './components/Sidebar';
+import React from 'react'; 
 import ChatWindow from './components/ChatWindow';
-import './assests/css/style.css';
+import './assets/css/style.css';
 import { ToastContainer } from 'react-toastify';
 
 function App() {

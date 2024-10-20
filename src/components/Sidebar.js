@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { ChevronRight, ChevronLeft, PlusCircle } from "lucide-react";
+import { ChevronRight, ChevronLeft, PlusCircle, Trash2 } from "lucide-react"; // Import Trash Icon
 
-function Sidebar({ uploadedFiles, onFileClick, onNewChatClick }) {
+function Sidebar({ uploadedFiles, onFileClick, onNewChatClick, onDeleteChat }) {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
 
   useEffect(() => {
-    // Instead of setting files from localStorage, just use uploadedFiles
     setSelectedFileIndex(null); // Reset the selected file index
   }, [uploadedFiles]);
 
   const handleFileClick = (file, index) => {
     setSelectedFileIndex(index);
     localStorage.setItem("selectedFileName", file.fileName);
-    // Ensure that we're passing the correct attributes
     onFileClick(file.data, file.queries, file.fileName);
   };
 
@@ -21,6 +19,11 @@ function Sidebar({ uploadedFiles, onFileClick, onNewChatClick }) {
     setSelectedFileIndex(null); // Deselect any file
     localStorage.removeItem("selectedFileName"); // Clear saved file
     onNewChatClick(); // Trigger the function to link the previous chat context
+  };
+
+  const handleDeleteClick = (fileName, event) => {
+    event.stopPropagation(); // Prevents triggering file click when deleting
+    onDeleteChat(fileName); // Call the delete handler passed from parent
   };
 
   return (
@@ -49,10 +52,16 @@ function Sidebar({ uploadedFiles, onFileClick, onNewChatClick }) {
             {uploadedFiles.map((file, index) => (
               <li
                 key={index}
-                onClick={() => handleFileClick(file, index)} // Ensure proper parameters are passed
+                onClick={() => handleFileClick(file, index)}
                 className={selectedFileIndex === index ? "selected" : ""}
               >
-                {file.fileName}
+                <span>{file.fileName}</span>
+                <button
+                  onClick={(event) => handleDeleteClick(file.fileName, event)}
+                  className="delete-btn ml-2"
+                >
+                  <Trash2 size={16} />
+                </button>
               </li>
             ))}
           </ul>

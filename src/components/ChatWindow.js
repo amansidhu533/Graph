@@ -33,6 +33,19 @@ function ChatWindow() {
       setSelectedFileName(savedFileName);
     }
   }, []);
+  const handleDeleteChat = (fileNameToDelete) => {
+    const updatedFiles = uploadedFiles.filter(
+      (file) => file.fileName !== fileNameToDelete
+    );
+    setUploadedFiles(updatedFiles);
+    localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
+
+    if (fileNameToDelete === selectedFileName) {
+      setFileData(null);
+      setQueries([]);
+      setSelectedFileName("Chat Application");
+    }
+  };
 
   useEffect(() => {
     const savedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
@@ -97,7 +110,7 @@ function ChatWindow() {
 
   // Handle file selection (existing chat)
   const handleFileClick = (data, queries, fileName) => {
-    setPreviousChatContext({ fileData, queries, selectedFileName });
+    setPreviousChatContext({ fileData: data, queries, selectedFileName: fileName });
 
     const selectedQueries = queries || [];
     const selectedData = data || null;
@@ -106,8 +119,7 @@ function ChatWindow() {
     setQueries(selectedQueries);
     setSelectedFileName(fileName);
 
-    setShowChatActions(false);
-    setIsNewChat(false);
+    setIsNewChat(false); // If we're selecting a file, we're not creating a new chat
   };
 
   // Handle new chat creation
@@ -191,8 +203,9 @@ function ChatWindow() {
         <div className="main-content">
           <Sidebar
             uploadedFiles={uploadedFiles}
-            onFileClick={handleFileClick} // Ensure this is passed correctly
+            onFileClick={handleFileClick}  
             onNewChatClick={handleNewChatClick}
+            onDeleteChat={handleDeleteChat}
           />
 
           <div className="chat-window">

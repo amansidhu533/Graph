@@ -196,7 +196,6 @@ function ChatWindow() {
             Assistant for <span>{selectedFileName}</span>
           </h2>
           <div className="top-bar-buttons">
-           
             <span className="db-connect" title={databaseName}>
               <img src={DBConnect} alt="DB Connection" />
             </span>
@@ -238,22 +237,25 @@ function ChatWindow() {
                 )}
               </div>
             ) : fileData || queries.length ? (
-              <>
-                {fileData && <GraphComponent data={fileData} />}
-                <div className="submitted-queries-container">
-                  {queries.length > 0 ? (
-                    <ul>
-                      {queries.map((query, index) => (
-                        <li key={index} className="submitted-query">
-                          {query}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>No queries submitted for this file.</p>
-                  )}
+              <div className="p-10 h-full">
+                <div className="bg-white h-full dark:bg-gray-800 shadow-lg rounded-lg flex flex-col text-black">
+                  <div className="submitted-queries-container">
+                    {queries.length > 0 ? (
+                      <ul>
+                        {queries.map((query, index) => (
+                          <li key={index} className="submitted-query">
+                            {query}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No queries submitted for this file.</p>
+                    )}
+                  </div>
+                  {fileData && <GraphComponent data={fileData} />}
+                  
                 </div>
-              </>
+              </div>
             ) : (
               <div className="message-container">
                 <p>Please select a data source or add a new one.</p>

@@ -556,7 +556,7 @@ button.add-datasource-btn {
   display: inline-block;
   align-self: end;
   font-size: 14px;
-  margin: 5px 20px;
+  margin:0;
   padding: 0;
   background-color: transparent;
 }
@@ -632,7 +632,7 @@ button.add-datasource-btn img {
   padding: 20px;
   overflow: auto;
   /* height: 400px; */
-  height: 100%;
+  height:auto;
   display: flex;
   align-items: flex-end;
 }

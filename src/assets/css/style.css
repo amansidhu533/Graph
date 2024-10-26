@@ -631,7 +631,7 @@ button.add-datasource-btn img {
 }
 
 .submitted-queries-container {
-  padding: 20px;
+   
   overflow: auto;
   max-height: 585px;
   height: auto;
@@ -646,7 +646,14 @@ button.add-datasource-btn img {
   align-items:stretch;
 }
 
-.submitted-queries-container li {
+.submitted-queries-container li { 
+  padding: 5px 10px;
+  border-radius: 12px 12px 12px 0;
+  margin: 5px 0 10px 0;
+  font-weight: 400;
+  font-size: 14px; 
+}
+.submitted-queries-container li p {
   background: #f5f5f5;
   padding: 5px 10px;
   border-radius: 12px 12px 12px 0;

@@ -154,7 +154,7 @@ function ChatWindow() {
               ...file,
               queries: [
                 ...file.queries,
-                { query: message, response: JSON.stringify(apiResponse) },
+                { query: message, response: apiResponse }, // Store the response as an object
               ],
             };
           }
@@ -167,7 +167,7 @@ function ChatWindow() {
         localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
         setQueries((prevQueries) => [
           ...prevQueries,
-          { query: message, response: JSON.stringify(apiResponse) },
+          { query: message, response: apiResponse }, // Store the response here too
         ]);
         setMessage("");
       } catch (error) {
@@ -183,13 +183,16 @@ function ChatWindow() {
     if (textArea1.trim()) {
       try {
         const response = await fetchQueryResponse(textArea1);
-        setApiResponse(response);
+        setApiResponse(response); // Store response to the last query
 
         const updatedFiles = uploadedFiles.map((file) => {
           if (file.fileName === selectedFileName) {
             return {
               ...file,
-              queries: [...file.queries, textArea1],
+              queries: [
+                ...file.queries,
+                { query: textArea1, response }, // Store the response along with the query
+              ],
             };
           }
           return file;
@@ -197,7 +200,10 @@ function ChatWindow() {
 
         setUploadedFiles(updatedFiles);
         localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
-        setQueries((prevQueries) => [...prevQueries, textArea1]);
+        setQueries((prevQueries) => [
+          ...prevQueries,
+          { query: textArea1, response }, // Store the response here too
+        ]);
         setTextArea1("");
       } catch (error) {
         console.error("Error sending query:", error);
@@ -280,12 +286,16 @@ function ChatWindow() {
                         {queries.map((query, index) => (
                           <li key={index} className="submitted-query">
                             <p>
-                              <strong>Query:</strong> {query}
+                              <strong>Query:</strong> {query.query}
                             </p>
                             {query.response && (
-                              <p>
-                                <strong>Response:</strong> {query.response}
-                              </p>
+                              <>
+                                {index === queries.length - 1 && ( // Show graph only for the latest query
+                                  <div className="api-response-container">
+                                    <ResponseGraph chartData={query.response} />
+                                  </div>
+                                )}
+                              </>
                             )}
                           </li>
                         ))}
@@ -295,28 +305,7 @@ function ChatWindow() {
                     )}
                   </div>
 
-                  {apiResponse && (
-                    <div className="api-response-container">
-                      <ResponseGraph chartData={apiResponse} />
-                    </div>
-                  )}
                   {fileData && <GraphComponent data={fileData} />}
-
-                  {/* {apiResponse && (
-                    <div className="api-response-container">
-                      <h3>API Response:</h3>
-                      <p>Chart Type: {apiResponse.chart_type}</p>
-                      {Array.isArray(apiResponse.data) ? (
-                        <ul>
-                          {apiResponse.data.map((item, index) => (
-                            <li key={index}>{JSON.stringify(item)}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <pre>{JSON.stringify(apiResponse.data, null, 2)}</pre>
-                      )}
-                    </div>
-                  )} */}
                 </div>
               </div>
             ) : (

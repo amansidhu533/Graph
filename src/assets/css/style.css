@@ -633,7 +633,8 @@ button.add-datasource-btn img {
 .submitted-queries-container {
   padding: 20px;
   overflow: auto;
-  height: 150px;
+  max-height: 585px;
+  height: auto;
   display: inline-block;
   width: 100%;
 }
@@ -642,7 +643,7 @@ button.add-datasource-btn img {
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-  align-items: flex-start;
+  align-items:stretch;
 }
 
 .submitted-queries-container li {

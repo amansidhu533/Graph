@@ -114,7 +114,21 @@ function ChatWindow() {
 
   // Handle new chat creation
   const handleNewChatClick = () => {
-    const linkedChatName = `${selectedFileName} → New Chat`;
+    // Function to increment the suffix in the filename
+    const incrementSuffix = (name) => {
+      const match = name.match(/(.+?)(_(\d{2}))?(\.csv)$/); // Match the base name, suffix, and file extension
+      if (match) {
+        const baseName = match[1];
+        const suffix = match[3] ? parseInt(match[3], 10) + 1 : 1;
+        const extension = match[4];
+        return `${baseName}_${String(suffix).padStart(2, "0")}${extension}`; // Pad with leading zero if needed
+      }
+      return name;
+    };
+
+    // Name the new chat with the incremented suffix
+    const linkedChatName = incrementSuffix(selectedFileName);
+
     const newChat = {
       fileName: linkedChatName,
       data: null,
@@ -142,37 +156,11 @@ function ChatWindow() {
       setLoading(true);
       try {
         const apiResponse = await fetchQueryResponse(message);
-
-        // Check for error in the response
-        if (apiResponse.status === "error") {
-          throw new Error(apiResponse.message); // Throw an error to be caught below
-        }
-
-        const updatedFiles = uploadedFiles.map((file) => {
-          if (file.fileName === selectedFileName) {
-            return {
-              ...file,
-              queries: [
-                ...file.queries,
-                { query: message, response: apiResponse }, // Store the response as an object
-              ],
-            };
-          }
-          return file;
-        });
-
-        console.log("Sending message:", message);
-
-        setUploadedFiles(updatedFiles);
-        localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
-        setQueries((prevQueries) => [
-          ...prevQueries,
-          { query: message, response: apiResponse }, // Store the response here too
-        ]);
+        const newQuery = { query: message, response: apiResponse };
+        setQueries((prevQueries) => [...prevQueries, newQuery]);
         setMessage("");
       } catch (error) {
         console.error("Error sending message:", error);
-        alert(`Error: ${error.message}`); // Show an alert with the error message
       } finally {
         setLoading(false);
       }
@@ -183,33 +171,89 @@ function ChatWindow() {
     if (textArea1.trim()) {
       try {
         const response = await fetchQueryResponse(textArea1);
-        setApiResponse(response); // Store response to the last query
-
-        const updatedFiles = uploadedFiles.map((file) => {
-          if (file.fileName === selectedFileName) {
-            return {
-              ...file,
-              queries: [
-                ...file.queries,
-                { query: textArea1, response }, // Store the response along with the query
-              ],
-            };
-          }
-          return file;
-        });
-
-        setUploadedFiles(updatedFiles);
-        localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
-        setQueries((prevQueries) => [
-          ...prevQueries,
-          { query: textArea1, response }, // Store the response here too
-        ]);
+        const newQuery = { query: textArea1, response: response || staticData };
+        setQueries((prevQueries) => [...prevQueries, newQuery]);
         setTextArea1("");
       } catch (error) {
         console.error("Error sending query:", error);
-        // Optionally set an error state here
       }
     }
+  };
+
+  const staticData = {
+    chart_type: "bar",
+    data: [
+      {
+        product: "Gadget A",
+        customer_segment: "Small Business",
+        total_sales: 4500.0,
+      },
+      {
+        product: "Gadget B",
+        customer_segment: "Enterprise",
+        total_sales: 5000.0,
+      },
+      {
+        product: "Gadget B",
+        customer_segment: "Small Business",
+        total_sales: 4000.0,
+      },
+      {
+        product: "Gadget X",
+        customer_segment: "Small Business",
+        total_sales: 9000.0,
+      },
+      {
+        product: "Gadget Y",
+        customer_segment: "Consumer",
+        total_sales: 7200.0,
+      },
+      {
+        product: "Gadget Y",
+        customer_segment: "Small Business",
+        total_sales: 9000.0,
+      },
+      {
+        product: "Service Package B",
+        customer_segment: "Enterprise",
+        total_sales: 22500.0,
+      },
+      {
+        product: "Service Package C",
+        customer_segment: "Enterprise",
+        total_sales: 30000.0,
+      },
+      {
+        product: "Widget A",
+        customer_segment: "Consumer",
+        total_sales: 4000.0,
+      },
+      {
+        product: "Widget A",
+        customer_segment: "Small Business",
+        total_sales: 5000.0,
+      },
+      {
+        product: "Widget B",
+        customer_segment: "Enterprise",
+        total_sales: 9000.0,
+      },
+      {
+        product: "Widget X",
+        customer_segment: "Consumer",
+        total_sales: 12000.0,
+      },
+      {
+        product: "Widget X",
+        customer_segment: "Small Business",
+        total_sales: 9000.0,
+      },
+      {
+        product: "Widget Y",
+        customer_segment: "Consumer",
+        total_sales: 14400.0,
+      },
+    ],
   };
 
   return (
@@ -278,28 +322,37 @@ function ChatWindow() {
                 )}
               </div>
             ) : fileData || queries.length ? (
-              <div className="p-10 h-3/4 overflow-auto">
+              <div className="m-10 ">
                 <div className="bg-white  dark:bg-gray-800 shadow-lg rounded-lg flex flex-col text-black">
                   <div className="submitted-queries-container h-40">
                     {queries.length > 0 ? (
                       <ul>
-                        {queries.map((query, index) => (
-                          <li key={index} className="submitted-query">
-                            <p>
-                              <strong>Query:</strong> {query.query}
-                            </p>
-                            {query.response && (
-                              <>
-                                {index === queries.length - 1 && ( // Show graph only for the latest query
-                                  <div className="api-response-container">
-                                    <strong>Title :  {query.query}</strong>
-                                    <ResponseGraph chartData={query.response} />
-                                  </div>
-                                )}
-                              </>
+                        {/* {queries.map((query, index) => (
+                          <li key={index}>
+                            <strong>Query:</strong> {query.query}
+                            <br />
+                            {index === queries.length - 1 && query.response && (
+                              // <ResponseGraph chartData={query.response} />
+                              <ResponseGraph chartData={staticData} />
                             )}
                           </li>
-                        ))}
+                        ))} */}
+                        <ul>
+                          {queries
+                            .slice()
+                            .reverse()
+                            .map((query, index) => (
+                              <li key={index} className="mb-4">
+                                <strong>Query:</strong> {query.query}
+                                <br />
+                                {query.response && (
+                                  <div className="mt-2">
+                                    <ResponseGraph chartData={staticData} />
+                                  </div>
+                                )}
+                              </li>
+                            ))}
+                        </ul>
                       </ul>
                     ) : (
                       <p className="text-gray-500">No queries submitted yet.</p>

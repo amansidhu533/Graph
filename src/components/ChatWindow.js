@@ -300,7 +300,7 @@ function ChatWindow() {
                     </div>
                   )}
 
-                  {apiResponse && (
+                  {/* {apiResponse && (
                     <div className="api-response-container">
                       <h3>API Response:</h3>
                       <p>Chart Type: {apiResponse.chart_type}</p>
@@ -314,7 +314,7 @@ function ChatWindow() {
                         <pre>{JSON.stringify(apiResponse.data, null, 2)}</pre>
                       )}
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             ) : (

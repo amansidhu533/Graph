@@ -278,7 +278,7 @@ function ChatWindow() {
                 )}
               </div>
             ) : fileData || queries.length ? (
-              <div className="p-10 ">
+              <div className="p-10 h-3/4 overflow-auto">
                 <div className="bg-white  dark:bg-gray-800 shadow-lg rounded-lg flex flex-col text-black">
                   <div className="submitted-queries-container h-40">
                     {queries.length > 0 ? (

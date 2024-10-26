@@ -292,6 +292,7 @@ function ChatWindow() {
                               <>
                                 {index === queries.length - 1 && ( // Show graph only for the latest query
                                   <div className="api-response-container">
+                                    <strong>Title :  {query.query}</strong>
                                     <ResponseGraph chartData={query.response} />
                                   </div>
                                 )}

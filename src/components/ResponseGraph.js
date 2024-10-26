@@ -12,11 +12,11 @@ import {
 } from "recharts";
 
 const ResponseGraph = ({ chartData }) => {
-  // Prepare data for the chart
-  const data = chartData.data.map((item) => ({
+  // Prepare data for the chart, with a fallback if chartData or chartData.data is undefined
+  const data = chartData?.data?.map((item) => ({
     name: `${item.product} (${item.customer_segment})`,
     total_sales: item.total_sales,
-  }));
+  })) || []; // Fallback to an empty array if data is unavailable
 
   return (
     <ResponsiveContainer width="100%" height={400}>

@@ -277,14 +277,16 @@ function ChatWindow() {
                   <div className="submitted-queries-container h-40">
                     {queries.length > 0 ? (
                       <ul>
-                        {queries.map((queryObj, index) => (
+                        {queries.map((query, index) => (
                           <li key={index} className="submitted-query">
                             <p>
-                              <strong>Query:</strong> {queryObj.query}
+                              <strong>Query:</strong> {query}
                             </p>
-                            <p>
-                              <strong>Response:</strong> {queryObj.response}
-                            </p>
+                            {query.response && (
+                              <p>
+                                <strong>Response:</strong> {query.response}
+                              </p>
+                            )}
                           </li>
                         ))}
                       </ul>
@@ -293,12 +295,12 @@ function ChatWindow() {
                     )}
                   </div>
 
-                  {fileData && <GraphComponent data={fileData} />}
                   {apiResponse && (
                     <div className="api-response-container">
                       <ResponseGraph chartData={apiResponse} />
                     </div>
                   )}
+                  {fileData && <GraphComponent data={fileData} />}
 
                   {/* {apiResponse && (
                     <div className="api-response-container">

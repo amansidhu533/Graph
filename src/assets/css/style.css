@@ -633,7 +633,7 @@ button.add-datasource-btn img {
 .submitted-queries-container {
   padding: 20px;
   overflow: auto;
-  height: 180px;
+  height: 150px;
   display: inline-block;
   width: 100%;
 }

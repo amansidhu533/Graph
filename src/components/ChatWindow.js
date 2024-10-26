@@ -78,6 +78,11 @@ function ChatWindow() {
     const updatedFiles = [...uploadedFiles, newFile];
     setUploadedFiles(updatedFiles);
     localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
+
+    // Set the state to display the newly uploaded file immediately
+    setFileData(parsedData); // Set the uploaded data to fileData
+    setQueries([]); // Reset queries or set them based on the uploaded data if applicable
+    setSelectedFileName(fileName); // Update selected file name
     setIsUploadModalOpen(false);
   };
 
@@ -102,6 +107,7 @@ function ChatWindow() {
       selectedFileName: fileName,
     });
 
+    // Ensure fileData and queries are set correctly
     const selectedQueries = queries || [];
     const selectedData = data || null;
 
@@ -109,7 +115,7 @@ function ChatWindow() {
     setQueries(selectedQueries);
     setSelectedFileName(fileName);
 
-    setIsNewChat(false); // If we're selecting a file, we're not creating a new chat
+    setIsNewChat(false); // Selecting a file should not create a new chat
   };
 
   // Handle new chat creation
@@ -322,43 +328,30 @@ function ChatWindow() {
                 )}
               </div>
             ) : fileData || queries.length ? (
-              <div className="m-10 ">
-                <div className="bg-white  dark:bg-gray-800 shadow-lg rounded-lg flex flex-col text-black">
+              <div className="message-container chat-msg-container">
+                <div className="bg-white flex flex-col text-black">
                   <div className="submitted-queries-container h-40">
                     {queries.length > 0 ? (
                       <ul>
-                        {/* {queries.map((query, index) => (
-                          <li key={index}>
-                            <strong>Query:</strong> {query.query}
-                            <br />
-                            {index === queries.length - 1 && query.response && (
-                              // <ResponseGraph chartData={query.response} />
-                              <ResponseGraph chartData={staticData} />
-                            )}
-                          </li>
-                        ))} */}
-                        <ul>
-                          {queries
-                            .slice()
-                            .reverse()
-                            .map((query, index) => (
-                              <li key={index} className="mb-4">
-                                <strong>Query:</strong> {query.query}
-                                <br />
-                                {query.response && (
-                                  <div className="mt-2">
-                                    <ResponseGraph chartData={staticData} />
-                                  </div>
-                                )}
-                              </li>
-                            ))}
-                        </ul>
+                        {queries
+                          .slice()
+                          .reverse()
+                          .map((query, index) => (
+                            <li key={index} className="mb-4  shadow-lg rounded-lg ">
+                              <strong>Query:</strong> {query.query}
+                              <br />
+                              {query.response && (
+                                <div className="mt-2">
+                                  <ResponseGraph chartData={query.response} />
+                                </div>
+                              )}
+                            </li>
+                          ))}
                       </ul>
                     ) : (
                       <p className="text-gray-500">No queries submitted yet.</p>
                     )}
                   </div>
-
                   {fileData && <GraphComponent data={fileData} />}
                 </div>
               </div>

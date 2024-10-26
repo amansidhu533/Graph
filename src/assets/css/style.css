@@ -297,6 +297,12 @@ h2 {
   padding: 20px;
 }
 
+.chat-msg-container {
+  display: block;
+  padding: 0;
+  overflow: auto;
+}
+
 .input-section {
   display: flex;
   gap: 10px;
@@ -627,32 +633,31 @@ button.add-datasource-btn img {
 .graph-container {
   padding: 20px;
   overflow: auto;
-
+  height: 100%;
 }
 
 .submitted-queries-container {
-   
-  overflow: auto;
-  max-height: 585px;
+  margin: 0 20px; 
   height: auto;
   display: inline-block;
-  width: 100%;
+  width: auto;
 }
 
 .submitted-queries-container ul {
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-  align-items:stretch;
+  align-items: stretch;
 }
 
-.submitted-queries-container li { 
+.submitted-queries-container li {
   padding: 5px 10px;
   border-radius: 12px 12px 12px 0;
-  margin: 5px 0 10px 0;
+  margin:20px;
   font-weight: 400;
-  font-size: 14px; 
+  font-size: 14px;
 }
+
 .submitted-queries-container li p {
   background: #f5f5f5;
   padding: 5px 10px;

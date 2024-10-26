@@ -8,6 +8,8 @@ import ResizeWindow from "./ResizeWindow";
 import GraphComponent from "./Graph";
 import AddDataSource from "../assets/images/add_datasource.png";
 import DBConnect from "../assets/images/database-connect1.gif";
+import { fetchQueryResponse } from "../modules";
+import ResponseGraph from "./ResponseGraph";
 
 function ChatWindow() {
   const [message, setMessage] = useState("");
@@ -26,6 +28,8 @@ function ChatWindow() {
   const [previousChatContext, setPreviousChatContext] = useState(null);
   const [isNewChat, setIsNewChat] = useState(false);
   const [databaseName, setDatabaseName] = useState("My Database");
+  const [apiResponse, setApiResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const savedFileName = localStorage.getItem("selectedFileName");
@@ -33,6 +37,7 @@ function ChatWindow() {
       setSelectedFileName(savedFileName);
     }
   }, []);
+
   const handleDeleteChat = (fileNameToDelete) => {
     const updatedFiles = uploadedFiles.filter(
       (file) => file.fileName !== fileNameToDelete
@@ -89,25 +94,6 @@ function ChatWindow() {
     }
   };
 
-  const sendMessage = () => {
-    if (message.trim()) {
-      const updatedFiles = uploadedFiles.map((file) => {
-        if (file.fileName === selectedFileName) {
-          return {
-            ...file,
-            queries: [...file.queries, message],
-          };
-        }
-        return file;
-      });
-
-      setUploadedFiles(updatedFiles);
-      localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
-      setQueries((prevQueries) => [...prevQueries, message]);
-      setMessage(""); // Clear the input after sending the message
-    }
-  };
-
   // Handle file selection (existing chat)
   const handleFileClick = (data, queries, fileName) => {
     setPreviousChatContext({
@@ -151,23 +137,72 @@ function ChatWindow() {
     setShowChatActions(true);
     setIsNewChat(false);
   };
+  const sendMessage = async () => {
+    if (message.trim()) {
+      setLoading(true);
+      try {
+        const apiResponse = await fetchQueryResponse(message);
 
-  const handleTextArea1Submit = () => {
-    if (textArea1.trim()) {
-      const updatedFiles = uploadedFiles.map((file) => {
-        if (file.fileName === selectedFileName) {
-          return {
-            ...file,
-            queries: [...file.queries, textArea1],
-          };
+        // Check for error in the response
+        if (apiResponse.status === "error") {
+          throw new Error(apiResponse.message); // Throw an error to be caught below
         }
-        return file;
-      });
 
-      setUploadedFiles(updatedFiles);
-      localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
-      setQueries((prevQueries) => [...prevQueries, textArea1]);
-      setTextArea1("");
+        const updatedFiles = uploadedFiles.map((file) => {
+          if (file.fileName === selectedFileName) {
+            return {
+              ...file,
+              queries: [
+                ...file.queries,
+                { query: message, response: JSON.stringify(apiResponse) },
+              ],
+            };
+          }
+          return file;
+        });
+
+        console.log("Sending message:", message);
+
+        setUploadedFiles(updatedFiles);
+        localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
+        setQueries((prevQueries) => [
+          ...prevQueries,
+          { query: message, response: JSON.stringify(apiResponse) },
+        ]);
+        setMessage("");
+      } catch (error) {
+        console.error("Error sending message:", error);
+        alert(`Error: ${error.message}`); // Show an alert with the error message
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleTextArea1Submit = async () => {
+    if (textArea1.trim()) {
+      try {
+        const response = await fetchQueryResponse(textArea1);
+        setApiResponse(response);
+
+        const updatedFiles = uploadedFiles.map((file) => {
+          if (file.fileName === selectedFileName) {
+            return {
+              ...file,
+              queries: [...file.queries, textArea1],
+            };
+          }
+          return file;
+        });
+
+        setUploadedFiles(updatedFiles);
+        localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
+        setQueries((prevQueries) => [...prevQueries, textArea1]);
+        setTextArea1("");
+      } catch (error) {
+        console.error("Error sending query:", error);
+        // Optionally set an error state here
+      }
     }
   };
 
@@ -218,7 +253,7 @@ function ChatWindow() {
             onDeleteChat={handleDeleteChat}
           />
 
-          <div className="chat-window">
+          <div className="chat-window h-full">
             {showChatActions ? (
               <div className="message-container">
                 {isNewChat && previousChatContext ? (
@@ -237,23 +272,49 @@ function ChatWindow() {
                 )}
               </div>
             ) : fileData || queries.length ? (
-              <div className="p-10 h-full">
-                <div className="bg-white h-full dark:bg-gray-800 shadow-lg rounded-lg flex flex-col text-black">
-                  <div className="submitted-queries-container">
+              <div className="p-10 ">
+                <div className="bg-white  dark:bg-gray-800 shadow-lg rounded-lg flex flex-col text-black">
+                  <div className="submitted-queries-container h-40">
                     {queries.length > 0 ? (
                       <ul>
-                        {queries.map((query, index) => (
+                        {queries.map((queryObj, index) => (
                           <li key={index} className="submitted-query">
-                            {query}
+                            <p>
+                              <strong>Query:</strong> {queryObj.query}
+                            </p>
+                            <p>
+                              <strong>Response:</strong> {queryObj.response}
+                            </p>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p>No queries submitted for this file.</p>
+                      <p className="text-gray-500">No queries submitted yet.</p>
                     )}
                   </div>
+
                   {fileData && <GraphComponent data={fileData} />}
-                  
+                  {apiResponse && (
+                    <div className="api-response-container">
+                      <ResponseGraph chartData={apiResponse} />
+                    </div>
+                  )}
+
+                  {apiResponse && (
+                    <div className="api-response-container">
+                      <h3>API Response:</h3>
+                      <p>Chart Type: {apiResponse.chart_type}</p>
+                      {Array.isArray(apiResponse.data) ? (
+                        <ul>
+                          {apiResponse.data.map((item, index) => (
+                            <li key={index}>{JSON.stringify(item)}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <pre>{JSON.stringify(apiResponse.data, null, 2)}</pre>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (

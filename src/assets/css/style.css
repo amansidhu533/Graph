@@ -530,12 +530,14 @@ input[type="text"] {
   display: flex;
   justify-content: space-between;
 }
+
 .uploaded-files-list ul li button {
   margin: 0;
   padding: 0;
   background: transparent;
   color: #e31919;
 }
+
 .dark-mode .uploaded-files-list ul li {
   color: #fff;
 }
@@ -556,7 +558,7 @@ button.add-datasource-btn {
   display: inline-block;
   align-self: end;
   font-size: 14px;
-  margin:0;
+  margin: 0;
   padding: 0;
   background-color: transparent;
 }
@@ -625,16 +627,15 @@ button.add-datasource-btn img {
 .graph-container {
   padding: 20px;
   overflow: auto;
-  height: 100%;
+
 }
 
 .submitted-queries-container {
   padding: 20px;
   overflow: auto;
-  /* height: 400px; */
-  height:auto;
-  display: flex;
-  align-items: flex-end;
+  height: 180px;
+  display: inline-block;
+  width: 100%;
 }
 
 .submitted-queries-container ul {

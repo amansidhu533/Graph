@@ -153,7 +153,7 @@ function GraphComponent({ data = [] }) {
   ];
 
   return (
-    <div className="graph-container">
+    <div className="graph-container  h-96">
       <div className="chart-controls">
         <div className="custom-dropdown">
           <button

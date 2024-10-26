@@ -43,3 +43,27 @@ import axiosInstance from "../axiosInstance";
       throw error;
     }
   }; 
+
+  export const fetchQueryResponse = async (userQuery, tableName = "Data_sales_SE0yw") => {
+    const requestBody = {
+      user_query: userQuery,
+      is_new_data_source: false,
+      table_name: tableName,
+    };
+  
+    try {
+      const response = await axiosInstance.post(APIs.askQuery, requestBody, {
+        headers: {
+          Authorization: 'token fab97082097b4f1:dc449e30fa68116',
+          'Content-Type': 'application/json',
+          Cookie: 'full_name=Guest; sid=Guest; system_user=no; user_id=Guest; user_image=',
+        },
+      });
+  
+      console.log("Query Result:", response.data.message);
+      return response.data.message;
+    } catch (error) {
+      console.error("Error querying data:", error);
+      throw error;
+    }
+  };

@@ -110,7 +110,11 @@ function ChatWindow() {
 
   // Handle file selection (existing chat)
   const handleFileClick = (data, queries, fileName) => {
-    setPreviousChatContext({ fileData: data, queries, selectedFileName: fileName });
+    setPreviousChatContext({
+      fileData: data,
+      queries,
+      selectedFileName: fileName,
+    });
 
     const selectedQueries = queries || [];
     const selectedData = data || null;
@@ -192,10 +196,17 @@ function ChatWindow() {
             Assistant for <span>{selectedFileName}</span>
           </h2>
           <div className="top-bar-buttons">
+           
             <span className="db-connect" title={databaseName}>
               <img src={DBConnect} alt="DB Connection" />
             </span>
             <ThemeToggle />
+            <button
+              onClick={handleAddDataSourceClick}
+              className="add-datasource-btn"
+            >
+              <img src={AddDataSource} alt="Add DataSource" />
+            </button>
             <ResizeWindow setWindowSize={setWindowSize} />
           </div>
         </div>
@@ -203,19 +214,12 @@ function ChatWindow() {
         <div className="main-content">
           <Sidebar
             uploadedFiles={uploadedFiles}
-            onFileClick={handleFileClick}  
+            onFileClick={handleFileClick}
             onNewChatClick={handleNewChatClick}
             onDeleteChat={handleDeleteChat}
           />
 
           <div className="chat-window">
-            <button
-              onClick={handleAddDataSourceClick}
-              className="add-datasource-btn"
-            >
-              <img src={AddDataSource} alt="Add DataSource" />
-            </button>
-
             {showChatActions ? (
               <div className="message-container">
                 {isNewChat && previousChatContext ? (
@@ -255,7 +259,6 @@ function ChatWindow() {
                 <p>Please select a data source or add a new one.</p>
               </div>
             )}
-
 
             <div className="input-section">
               <div className="text-area-container">

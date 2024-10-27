@@ -554,6 +554,10 @@ input[type="text"] {
   box-shadow: 3px 3px 10px 0 #0000001c;
   background: #fff;
 }
+.uploaded-files-list ul li:hover span,
+.uploaded-files-list ul li.selected span {
+  color: #000;
+}
 
 .dark-mode .uploaded-files-list ul li:hover {
   color: #000;

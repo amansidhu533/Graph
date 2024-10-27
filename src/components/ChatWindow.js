@@ -95,11 +95,15 @@ function ChatWindow() {
     const updatedFiles = [...uploadedFiles, newFile];
     setUploadedFiles(updatedFiles);
     localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
-
+  
     // Set the state to display the newly uploaded file immediately
     setFileData(parsedData); // Set the uploaded data to fileData
     setQueries([]); // Reset queries or set them based on the uploaded data if applicable
     setSelectedFileName(fileName); // Update selected file name
+  
+    // Automatically show the graph when a new file is uploaded
+    setShowChatActions(false);
+  
     setIsUploadModalOpen(false);
   };
 
@@ -223,6 +227,7 @@ function ChatWindow() {
     setFileData(data || null);
     setQueries(selectedQueries); // Load saved queries for this file
     setSelectedFileName(fileName);
+    setShowChatActions(false);
     setIsNewChat(false);
   };
 

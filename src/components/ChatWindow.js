@@ -136,30 +136,19 @@ function ChatWindow() {
     setIsDBModalOpen(true);
   };
 
-  // const handleDBOptionSubmit = ({ file, token }) => {
-  //   if (file) {
-  //     console.log(`Uploaded JSON file: ${file.name}`);
-  //   }
-  //   if (token) {
-  //     console.log(`Entered Token: ${token}`);
-  //   }
-  // };
+  const incrementSuffix = (name) => {
+    const match = name.match(/(.+?)(_(\d{2}))?(\.csv)?$/); // Match the base name, optional suffix, and .csv extension
+    if (match) {
+      const baseName = match[1];
+      const suffix = match[2] ? parseInt(match[2].slice(1), 10) + 1 : 1; // Increment suffix or start at 1
+      const extension = match[3] ? match[3] : ".csv"; // Ensure the .csv extension
+      return `${baseName}_${String(suffix).padStart(2, "0")}${extension}`; // Pad suffix with leading zero
+    }
+    return `${name}_01.csv`; // Default to _01.csv if no suffix or extension
+  };
 
-  // Handle new chat creation
   const handleNewChatClick = () => {
-    // Function to increment the suffix in the filename
-    const incrementSuffix = (name) => {
-      const match = name.match(/(.+?)(_(\d{2}))?(\.csv)$/); // Match the base name, suffix, and file extension
-      if (match) {
-        const baseName = match[1];
-        const suffix = match[3] ? parseInt(match[3], 10) + 1 : 1;
-        const extension = match[4];
-        return `${baseName}_${String(suffix).padStart(2, "0")}${extension}`; // Pad with leading zero if needed
-      }
-      return name;
-    };
-
-    // Name the new chat with the incremented suffix
+    // Use incrementSuffix to get the new chat name with incremented suffix
     const linkedChatName = incrementSuffix(selectedFileName);
 
     const newChat = {
@@ -178,6 +167,7 @@ function ChatWindow() {
     setSelectedFileName(linkedChatName);
     setShowChatActions(false); // Hide actions when new chat is selected
     setIsNewChat(true);
+
     // Clear the chat state in local storage when creating a new chat
     localStorage.removeItem("chatState");
   };
@@ -418,7 +408,7 @@ function ChatWindow() {
                               <br />
                               {query.response && (
                                 <div className="mt-2">
-                                   <strong>Title: </strong> {query.query}
+                                  <strong>Title: </strong> {query.query}
                                   <ResponseGraph chartData={query.response} />
                                 </div>
                               )}

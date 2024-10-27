@@ -418,6 +418,7 @@ function ChatWindow() {
                               <br />
                               {query.response && (
                                 <div className="mt-2">
+                                   <strong>Title: </strong> {query.query}
                                   <ResponseGraph chartData={query.response} />
                                 </div>
                               )}

@@ -1,4 +1,4 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import { fetchFileJsonData } from "../modules";
 
 function ConnectDBModal({ handleCloseModal, handleDBOptionSubmit }) {
@@ -12,19 +12,21 @@ function ConnectDBModal({ handleCloseModal, handleDBOptionSubmit }) {
   const handleTokenChange = (event) => {
     setToken(event.target.value);
   };
+ 
 
   const handleSubmit = async () => {
     try {
-      // Assuming the JSON input is provided as a string and needs to be converted to a Blob
+      // Convert the JSON text input to a Blob and use it as a 'file'
       const jsonBlob = new Blob([json], { type: "application/json" });
-      const result = await fetchFileJsonData(jsonBlob);
+      const result = await fetchFileJsonData(jsonBlob); // Call fetchFileJsonData
+
       console.log("File processed successfully:", result);
-      
-      handleDBOptionSubmit({ json, token });
-      handleCloseModal();
+
+      // Pass the chart data to the ChatWindow via handleDBOptionSubmit
+      handleDBOptionSubmit({ json, token, chartData: result.chart_data });
+      handleCloseModal(); // Close the modal after submitting
     } catch (error) {
       console.error("Error during submission:", error);
-      // You might want to handle the error by displaying a message to the user
     }
   };
 

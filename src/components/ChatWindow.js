@@ -34,21 +34,20 @@ function ChatWindow() {
   const [dbChartData, setDbChartData] = useState(null); // New state to store chart data from the DB
   const [jsonChartData, setJsonChartData] = useState(null);
 
-
   const handleDBOptionSubmit = ({ json, token, chartData }) => {
     if (chartData) {
       setDbChartData(chartData); // Store the chartData from the DB response
     }
   };
-const handleJsonChartClick = async () => {
-  // Fetch JSON data (you can replace this with your actual fetching logic)
-  const jsonData = await fetch('/path/to/your/json/data'); // Adjust the path accordingly
-  const jsonDataParsed = await jsonData.json();
-  
-  // Assuming jsonDataParsed is in a suitable format for your chart
-  setJsonChartData(jsonDataParsed); 
-  setShowChatActions(false); // Hide other chat actions
-};
+  const handleJsonChartClick = async () => {
+    // Fetch JSON data (you can replace this with your actual fetching logic)
+    const jsonData = await fetch("/path/to/your/json/data"); // Adjust the path accordingly
+    const jsonDataParsed = await jsonData.json();
+
+    // Assuming jsonDataParsed is in a suitable format for your chart
+    setJsonChartData(jsonDataParsed);
+    setShowChatActions(false); // Hide other chat actions
+  };
 
   useEffect(() => {
     // Load saved file name from local storage
@@ -84,7 +83,14 @@ const handleJsonChartClick = async () => {
     if (fileNameToDelete === selectedFileName) {
       setFileData(null);
       setQueries([]);
-      setSelectedFileName("Chat Application");
+      setSelectedFileName("Chat Application"); // Reset selectedFileName to default
+
+      // Update local storage for selectedFileName if there are no files left
+      if (updatedFiles.length === 0) {
+        localStorage.removeItem("selectedFileName");
+      } else {
+        localStorage.setItem("selectedFileName", "Chat Application");
+      }
     }
   };
 
@@ -114,15 +120,15 @@ const handleJsonChartClick = async () => {
     const updatedFiles = [...uploadedFiles, newFile];
     setUploadedFiles(updatedFiles);
     localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
-  
+
     // Set the state to display the newly uploaded file immediately
     setFileData(parsedData); // Set the uploaded data to fileData
     setQueries([]); // Reset queries or set them based on the uploaded data if applicable
     setSelectedFileName(fileName); // Update selected file name
-  
+
     // Automatically show the graph when a new file is uploaded
     setShowChatActions(false);
-  
+
     setIsUploadModalOpen(false);
   };
 

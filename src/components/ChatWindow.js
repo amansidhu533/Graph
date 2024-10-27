@@ -381,8 +381,8 @@ function ChatWindow() {
                               key={index}
                               className="mb-4  shadow-lg rounded-lg "
                             >
-                              <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4">
-                                <strong>Query:</strong> {query.query}
+                              <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4 font-medium">
+                                <strong>Q:</strong> {query.query}
                               </div>
                               <br />
                               {query.response && (

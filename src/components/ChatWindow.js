@@ -32,11 +32,28 @@ function ChatWindow() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Load saved file name from local storage
     const savedFileName = localStorage.getItem("selectedFileName");
     if (savedFileName) {
       setSelectedFileName(savedFileName);
     }
+
+    // Load saved chat state from local storage
+    const savedChatState = JSON.parse(localStorage.getItem("chatState"));
+    if (savedChatState) {
+      setFileData(savedChatState.fileData);
+      setQueries(savedChatState.queries);
+      setTextArea1(savedChatState.textArea1);
+    }
   }, []);
+
+  useEffect(() => {
+    // Save chat state to local storage whenever it changes
+    localStorage.setItem(
+      "chatState",
+      JSON.stringify({ fileData, queries, textArea1 })
+    );
+  }, [fileData, queries, textArea1]);
 
   const handleDeleteChat = (fileNameToDelete) => {
     const updatedFiles = uploadedFiles.filter(
@@ -99,25 +116,6 @@ function ChatWindow() {
     }
   };
 
-  // Handle file selection (existing chat)
-  const handleFileClick = (data, queries, fileName) => {
-    setPreviousChatContext({
-      fileData: data,
-      queries,
-      selectedFileName: fileName,
-    });
-
-    // Ensure fileData and queries are set correctly
-    const selectedQueries = queries || [];
-    const selectedData = data || null;
-
-    setFileData(selectedData);
-    setQueries(selectedQueries);
-    setSelectedFileName(fileName);
-
-    setIsNewChat(false); // Selecting a file should not create a new chat
-  };
-
   // Handle new chat creation
   const handleNewChatClick = () => {
     // Function to increment the suffix in the filename
@@ -151,12 +149,15 @@ function ChatWindow() {
     setSelectedFileName(linkedChatName);
     setShowChatActions(false); // Hide actions when new chat is selected
     setIsNewChat(true);
+    // Clear the chat state in local storage when creating a new chat
+    localStorage.removeItem("chatState");
   };
 
   const handleAddDataSourceClick = () => {
     setShowChatActions(true);
     setIsNewChat(false);
   };
+  // Update the sendMessage function
   const sendMessage = async () => {
     if (message.trim()) {
       setLoading(true);
@@ -165,6 +166,15 @@ function ChatWindow() {
         const newQuery = { query: message, response: apiResponse };
         setQueries((prevQueries) => [...prevQueries, newQuery]);
         setMessage("");
+
+        // Update the queries for the current file in uploadedFiles
+        const updatedFiles = uploadedFiles.map((file) =>
+          file.fileName === selectedFileName
+            ? { ...file, queries: [...file.queries, newQuery] }
+            : file
+        );
+        setUploadedFiles(updatedFiles);
+        localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
       } catch (error) {
         console.error("Error sending message:", error);
       } finally {
@@ -173,6 +183,7 @@ function ChatWindow() {
     }
   };
 
+  // Update the handleTextArea1Submit function similarly
   const handleTextArea1Submit = async () => {
     if (textArea1.trim()) {
       try {
@@ -180,10 +191,39 @@ function ChatWindow() {
         const newQuery = { query: textArea1, response: response || staticData };
         setQueries((prevQueries) => [...prevQueries, newQuery]);
         setTextArea1("");
+
+        // Save the query to the current file's queries in uploadedFiles
+        const updatedFiles = uploadedFiles.map((file) =>
+          file.fileName === selectedFileName
+            ? { ...file, queries: [...file.queries, newQuery] }
+            : file
+        );
+        setUploadedFiles(updatedFiles);
+        localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
       } catch (error) {
         console.error("Error sending query:", error);
       }
     }
+  };
+
+  // Update the handleFileClick function to load the saved queries
+  const handleFileClick = (data, queries, fileName) => {
+    setPreviousChatContext({
+      fileData: data,
+      queries,
+      selectedFileName: fileName,
+    });
+
+    // Retrieve the queries for the selected file and set them in state
+    const selectedFile = uploadedFiles.find(
+      (file) => file.fileName === fileName
+    );
+    const selectedQueries = selectedFile ? selectedFile.queries : [];
+
+    setFileData(data || null);
+    setQueries(selectedQueries); // Load saved queries for this file
+    setSelectedFileName(fileName);
+    setIsNewChat(false);
   };
 
   const staticData = {
@@ -337,8 +377,13 @@ function ChatWindow() {
                           .slice()
                           .reverse()
                           .map((query, index) => (
-                            <li key={index} className="mb-4  shadow-lg rounded-lg ">
-                              <strong>Query:</strong> {query.query}
+                            <li
+                              key={index}
+                              className="mb-4  shadow-lg rounded-lg "
+                            >
+                              <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4">
+                                <strong>Query:</strong> {query.query}
+                              </div>
                               <br />
                               {query.response && (
                                 <div className="mt-2">

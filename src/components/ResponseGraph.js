@@ -12,11 +12,14 @@ import {
 } from "recharts";
 
 const ResponseGraph = ({ chartData }) => {
-  // Prepare data for the chart, with a fallback if chartData or chartData.data is undefined
-  const data = chartData?.data?.map((item) => ({
-    name: `${item.product} (${item.customer_segment})`,
-    total_sales: item.total_sales,
-  })) || []; // Fallback to an empty array if data is unavailable
+  // Prepare data for the chart, handling both total_quantity_sold and total_sales
+  const data = chartData?.data?.map((item) => {
+    const key = item.total_quantity_sold !== undefined ? "total_quantity_sold" : "total_sales"; // Determine the correct key
+    return {
+      name: item.product,
+      value: item[key], // Use the dynamically determined key
+    };
+  }) || []; // Fallback to an empty array if data is unavailable
 
   return (
     <ResponsiveContainer width="100%" height={400}>
@@ -26,7 +29,7 @@ const ResponseGraph = ({ chartData }) => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="total_sales" fill="rgba(75, 192, 192, 0.6)">
+        <Bar dataKey="value" fill="rgba(75, 192, 192, 0.6)">
           <LabelList position="top" fill="#000" />
         </Bar>
       </BarChart>

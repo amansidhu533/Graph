@@ -10,6 +10,7 @@ import AddDataSource from "../assets/images/add_datasource.png";
 import DBConnect from "../assets/images/database-connect1.gif";
 import { fetchQueryResponse } from "../modules";
 import ResponseGraph from "./ResponseGraph";
+import JsonChart from "./JsonChart";
 
 function ChatWindow() {
   const [message, setMessage] = useState("");
@@ -30,6 +31,24 @@ function ChatWindow() {
   const [databaseName, setDatabaseName] = useState("My Database");
   const [apiResponse, setApiResponse] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [dbChartData, setDbChartData] = useState(null); // New state to store chart data from the DB
+  const [jsonChartData, setJsonChartData] = useState(null);
+
+
+  const handleDBOptionSubmit = ({ json, token, chartData }) => {
+    if (chartData) {
+      setDbChartData(chartData); // Store the chartData from the DB response
+    }
+  };
+const handleJsonChartClick = async () => {
+  // Fetch JSON data (you can replace this with your actual fetching logic)
+  const jsonData = await fetch('/path/to/your/json/data'); // Adjust the path accordingly
+  const jsonDataParsed = await jsonData.json();
+  
+  // Assuming jsonDataParsed is in a suitable format for your chart
+  setJsonChartData(jsonDataParsed); 
+  setShowChatActions(false); // Hide other chat actions
+};
 
   useEffect(() => {
     // Load saved file name from local storage
@@ -111,14 +130,14 @@ function ChatWindow() {
     setIsDBModalOpen(true);
   };
 
-  const handleDBOptionSubmit = ({ file, token }) => {
-    if (file) {
-      console.log(`Uploaded JSON file: ${file.name}`);
-    }
-    if (token) {
-      console.log(`Entered Token: ${token}`);
-    }
-  };
+  // const handleDBOptionSubmit = ({ file, token }) => {
+  //   if (file) {
+  //     console.log(`Uploaded JSON file: ${file.name}`);
+  //   }
+  //   if (token) {
+  //     console.log(`Entered Token: ${token}`);
+  //   }
+  // };
 
   // Handle new chat creation
   const handleNewChatClick = () => {
@@ -352,6 +371,7 @@ function ChatWindow() {
             onFileClick={handleFileClick}
             onNewChatClick={handleNewChatClick}
             onDeleteChat={handleDeleteChat}
+            onJsonChartClick={handleJsonChartClick}
           />
 
           <div className="chat-window h-full">
@@ -386,7 +406,7 @@ function ChatWindow() {
                               key={index}
                               className="mb-4  shadow-lg rounded-lg "
                             >
-                              <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4 font-medium">
+                              <div className="bg-gray-100 p-3 rounded-lg mb-4 font-medium">
                                 <strong>Q:</strong> {query.query}
                               </div>
                               <br />
@@ -402,6 +422,8 @@ function ChatWindow() {
                       <p className="text-gray-500">No queries submitted yet.</p>
                     )}
                   </div>
+                  {dbChartData && <ResponseGraph chartData={dbChartData} />}
+                  {jsonChartData && <JsonChart data={jsonChartData} />}
                   {fileData && <GraphComponent data={fileData} />}
                 </div>
               </div>

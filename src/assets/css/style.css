@@ -294,7 +294,7 @@ h2 {
   align-items: center;
   justify-content: center;
   height: 90%;
-  padding: 20px;
+  padding: 0;
 }
 
 .chat-msg-container {
@@ -675,10 +675,9 @@ button.add-datasource-btn img {
 .chart-controls {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
-  margin-bottom: 20px;
+  align-items: center; 
+  margin: 10px 30px 20px;
 }
-
 .custom-dropdown {
   position: relative;
   width: auto;

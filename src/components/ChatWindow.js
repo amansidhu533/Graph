@@ -43,14 +43,14 @@ function ChatWindow() {
     }
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     const savedFileName = localStorage.getItem("selectedFileName");
     if (savedFileName) {
       // Remove the file extension from the saved file name, if it has one
       const fileNameWithoutExtension = savedFileName.replace(/\.[^/.]+$/, "");
       setSelectedFileName(fileNameWithoutExtension);
     }
-  
+
     const savedChatState = JSON.parse(localStorage.getItem("chatState"));
     if (savedChatState) {
       setFileData(savedChatState.fileData);
@@ -58,7 +58,6 @@ function ChatWindow() {
       setTextArea1(savedChatState.textArea1);
     }
   }, []);
-  
 
   useEffect(() => {
     localStorage.setItem(
@@ -103,8 +102,12 @@ function ChatWindow() {
 
   const handleFileSubmit = (fileName, parsedData) => {
     const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
-    const newFile = { fileName: fileNameWithoutExtension, data: parsedData, queries: [] };
- 
+    const newFile = {
+      fileName: fileNameWithoutExtension,
+      data: parsedData,
+      queries: [],
+    };
+
     const updatedFiles = [...uploadedFiles, newFile];
     setUploadedFiles(updatedFiles);
     localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
@@ -132,7 +135,11 @@ function ChatWindow() {
   };
 
   const handleNewChatClick = () => {
-    const linkedChatName = incrementSuffix(selectedFileName);
+    // Generate the new chat name and remove any file extension
+    const linkedChatName = incrementSuffix(selectedFileName).replace(
+      /\.[^/.]+$/,
+      ""
+    );
 
     const newChat = {
       fileName: linkedChatName,
@@ -146,7 +153,7 @@ function ChatWindow() {
 
     setFileData(null);
     setQueries(newChat.queries);
-    setSelectedFileName(linkedChatName);
+    setSelectedFileName(linkedChatName); // Set the name without extension
     setShowChatActions(false);
     setIsNewChat(true);
 
@@ -210,19 +217,19 @@ function ChatWindow() {
   const handleFileClick = (data, queries, fileName) => {
     // Strip extension from fileName
     const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
-  
+
     setPreviousChatContext({
       fileData: data,
       queries,
       selectedFileName: fileNameWithoutExtension,
     });
-  
+
     // Retrieve the queries for the selected file and set them in state
     const selectedFile = uploadedFiles.find(
       (file) => file.fileName === fileNameWithoutExtension
     );
     const selectedQueries = selectedFile ? selectedFile.queries : [];
-  
+
     setFileData(data || null);
     setQueries(selectedQueries); // Load saved queries for this file
     setSelectedFileName(fileNameWithoutExtension); // Use name without extension
@@ -395,7 +402,7 @@ function ChatWindow() {
                             >
                               <div className="bg-gray-100 p-3 rounded-lg mb-4 font-medium">
                                 <strong>Q:</strong> {query.query}
-                              </div> 
+                              </div>
                               {query.response && (
                                 <div className="mt-2">
                                   <strong>Title: </strong> {query.query}

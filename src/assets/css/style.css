@@ -554,6 +554,7 @@ input[type="text"] {
   box-shadow: 3px 3px 10px 0 #0000001c;
   background: #fff;
 }
+
 .uploaded-files-list ul li:hover span,
 .uploaded-files-list ul li.selected span {
   color: #000;
@@ -633,7 +634,7 @@ button.add-datasource-btn img {
   background: #e5e7eb;
 
 }
- 
+
 .graph-container {
   padding: 20px;
   overflow: auto;
@@ -641,7 +642,7 @@ button.add-datasource-btn img {
 }
 
 .submitted-queries-container {
-  margin: 0 20px; 
+  margin: 0 20px;
   height: auto;
   display: inline-block;
   width: auto;
@@ -657,7 +658,7 @@ button.add-datasource-btn img {
 .submitted-queries-container li {
   padding: 5px 10px;
   border-radius: 12px 12px 12px 0;
-  margin:20px;
+  margin: 20px;
   font-weight: 400;
   font-size: 14px;
 }
@@ -675,9 +676,10 @@ button.add-datasource-btn img {
 .chart-controls {
   display: flex;
   justify-content: flex-end;
-  align-items: center; 
+  align-items: center;
   margin: 10px 30px 20px;
 }
+
 .custom-dropdown {
   position: relative;
   width: auto;
@@ -685,21 +687,30 @@ button.add-datasource-btn img {
 }
 
 .chart-controls button {
-  color: white;
+  color: #4a90e2;
   border: none;
-  padding: 8px;
+  padding: 3px;
   border-radius: 4px;
   cursor: pointer;
   display: flex;
-  height: 36px;
-  width: 36px
+  height: 22px;
+  width: 22px;
+  background-color: transparent;
 }
 
 .custom-dropdown .dropdown-button {
-  background-color: #4a90e2;
+  color: #4a90e2;
   /* width: 100%; */
 
 }
+
+.save-button {
+  color: #28a745;
+}
+
+
+
+.save-button svg {}
 
 .custom-dropdown .dropdown-list {
   /* width: 150px; */
@@ -732,15 +743,7 @@ button.add-datasource-btn img {
   background-color: #f0f0f0;
 }
 
-.save-button {
-  background-color: #28a745;
-}
 
-.save-button:hover {
-  background-color: #218838;
-}
-
-.save-button svg {}
 
 
 

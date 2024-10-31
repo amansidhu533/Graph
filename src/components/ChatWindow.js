@@ -31,32 +31,26 @@ function ChatWindow() {
   const [databaseName, setDatabaseName] = useState("My Database");
   const [apiResponse, setApiResponse] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [dbChartData, setDbChartData] = useState(null); // New state to store chart data from the DB
+  const [dbChartData, setDbChartData] = useState(null);
   const [jsonChartData, setJsonChartData] = useState(null);
 
   const handleDBOptionSubmit = ({ json, token, chartData }) => {
     if (chartData) {
-      setDbChartData(chartData); // Store the chartData from the DB response
+      setJsonChartData(chartData);
+      setDbChartData(null);
+      setFileData(null);
+      setShowChatActions(false);
     }
   };
-  const handleJsonChartClick = async () => {
-    // Fetch JSON data (you can replace this with your actual fetching logic)
-    const jsonData = await fetch("/path/to/your/json/data"); // Adjust the path accordingly
-    const jsonDataParsed = await jsonData.json();
 
-    // Assuming jsonDataParsed is in a suitable format for your chart
-    setJsonChartData(jsonDataParsed);
-    setShowChatActions(false); // Hide other chat actions
-  };
-
-  useEffect(() => {
-    // Load saved file name from local storage
+  useEffect(() => { 
     const savedFileName = localStorage.getItem("selectedFileName");
     if (savedFileName) {
-      setSelectedFileName(savedFileName);
+      // Remove the file extension from the saved file name, if it has one
+      const fileNameWithoutExtension = savedFileName.replace(/\.[^/.]+$/, "");
+      setSelectedFileName(fileNameWithoutExtension);
     }
-
-    // Load saved chat state from local storage
+  
     const savedChatState = JSON.parse(localStorage.getItem("chatState"));
     if (savedChatState) {
       setFileData(savedChatState.fileData);
@@ -64,9 +58,9 @@ function ChatWindow() {
       setTextArea1(savedChatState.textArea1);
     }
   }, []);
+  
 
   useEffect(() => {
-    // Save chat state to local storage whenever it changes
     localStorage.setItem(
       "chatState",
       JSON.stringify({ fileData, queries, textArea1 })
@@ -103,52 +97,41 @@ function ChatWindow() {
     setUploadedFiles(updatedFiles);
   }, []);
 
-  const handleUploadClick = () => {
-    setIsUploadModalOpen(true);
-  };
-
-  const handleCloseUploadModal = () => {
-    setIsUploadModalOpen(false);
-  };
-
-  const handleCloseDBModal = () => {
-    setIsDBModalOpen(false);
-  };
+  const handleUploadClick = () => setIsUploadModalOpen(true);
+  const handleCloseUploadModal = () => setIsUploadModalOpen(false);
+  const handleCloseDBModal = () => setIsDBModalOpen(false);
 
   const handleFileSubmit = (fileName, parsedData) => {
-    const newFile = { fileName, data: parsedData, queries: [] };
+    const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
+    const newFile = { fileName: fileNameWithoutExtension, data: parsedData, queries: [] };
+ 
     const updatedFiles = [...uploadedFiles, newFile];
     setUploadedFiles(updatedFiles);
     localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
 
-    // Set the state to display the newly uploaded file immediately
-    setFileData(parsedData); // Set the uploaded data to fileData
-    setQueries([]); // Reset queries or set them based on the uploaded data if applicable
-    setSelectedFileName(fileName); // Update selected file name
+    setFileData(parsedData);
+    setQueries([]);
+    setSelectedFileName(fileName);
 
-    // Automatically show the graph when a new file is uploaded
     setShowChatActions(false);
 
     setIsUploadModalOpen(false);
   };
 
-  const handleDBClick = () => {
-    setIsDBModalOpen(true);
-  };
+  const handleDBClick = () => setIsDBModalOpen(true);
 
   const incrementSuffix = (name) => {
-    const match = name.match(/(.+?)(_(\d{2}))?(\.csv)?$/); // Match the base name, optional suffix, and .csv extension
+    const match = name.match(/(.+?)(_(\d{2}))?(\.csv)?$/);
     if (match) {
       const baseName = match[1];
-      const suffix = match[2] ? parseInt(match[2].slice(1), 10) + 1 : 1; // Increment suffix or start at 1
-      const extension = match[3] ? match[3] : ".csv"; // Ensure the .csv extension
-      return `${baseName}_${String(suffix).padStart(2, "0")}${extension}`; // Pad suffix with leading zero
+      const suffix = match[2] ? parseInt(match[2].slice(1), 10) + 1 : 1;
+      const extension = match[3] ? match[3] : ".csv";
+      return `${baseName}_${String(suffix).padStart(2, "0")}${extension}`;
     }
-    return `${name}_01.csv`; // Default to _01.csv if no suffix or extension
+    return `${name}_01.csv`;
   };
 
   const handleNewChatClick = () => {
-    // Use incrementSuffix to get the new chat name with incremented suffix
     const linkedChatName = incrementSuffix(selectedFileName);
 
     const newChat = {
@@ -157,7 +140,6 @@ function ChatWindow() {
       queries: previousChatContext ? previousChatContext.queries : [],
     };
 
-    // Ensure the new chat is appended and visible in the sidebar
     const updatedFiles = [...uploadedFiles, newChat];
     setUploadedFiles(updatedFiles);
     localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
@@ -165,10 +147,9 @@ function ChatWindow() {
     setFileData(null);
     setQueries(newChat.queries);
     setSelectedFileName(linkedChatName);
-    setShowChatActions(false); // Hide actions when new chat is selected
+    setShowChatActions(false);
     setIsNewChat(true);
 
-    // Clear the chat state in local storage when creating a new chat
     localStorage.removeItem("chatState");
   };
 
@@ -227,21 +208,24 @@ function ChatWindow() {
 
   // Update the handleFileClick function to load the saved queries
   const handleFileClick = (data, queries, fileName) => {
+    // Strip extension from fileName
+    const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
+  
     setPreviousChatContext({
       fileData: data,
       queries,
-      selectedFileName: fileName,
+      selectedFileName: fileNameWithoutExtension,
     });
-
+  
     // Retrieve the queries for the selected file and set them in state
     const selectedFile = uploadedFiles.find(
-      (file) => file.fileName === fileName
+      (file) => file.fileName === fileNameWithoutExtension
     );
     const selectedQueries = selectedFile ? selectedFile.queries : [];
-
+  
     setFileData(data || null);
     setQueries(selectedQueries); // Load saved queries for this file
-    setSelectedFileName(fileName);
+    setSelectedFileName(fileNameWithoutExtension); // Use name without extension
     setShowChatActions(false);
     setIsNewChat(false);
   };
@@ -347,8 +331,8 @@ function ChatWindow() {
             Assistant for <span>{selectedFileName}</span>
           </h2>
           <div className="top-bar-buttons">
-            <span className="db-connect" title={databaseName}>
-              <img src={DBConnect} alt="DB Connection" />
+            <span className="db-connect" title={selectedFileName}>
+              <img src={DBConnect} alt={selectedFileName} />
             </span>
             <ThemeToggle />
             <button
@@ -364,10 +348,17 @@ function ChatWindow() {
         <div className="main-content">
           <Sidebar
             uploadedFiles={uploadedFiles}
-            onFileClick={handleFileClick}
+            onFileClick={(data, queries, fileName) => {
+              setFileData(data);
+              setQueries(queries);
+              setSelectedFileName(fileName);
+              setShowChatActions(false);
+              setIsNewChat(false);
+              setJsonChartData(null);
+            }}
             onNewChatClick={handleNewChatClick}
             onDeleteChat={handleDeleteChat}
-            onJsonChartClick={handleJsonChartClick}
+            onJsonChartClick={() => setJsonChartData(null)}
           />
 
           <div className="chat-window h-full">
@@ -404,8 +395,7 @@ function ChatWindow() {
                             >
                               <div className="bg-gray-100 p-3 rounded-lg mb-4 font-medium">
                                 <strong>Q:</strong> {query.query}
-                              </div>
-                              <br />
+                              </div> 
                               {query.response && (
                                 <div className="mt-2">
                                   <strong>Title: </strong> {query.query}
@@ -419,9 +409,16 @@ function ChatWindow() {
                       <p className="text-gray-500">No queries submitted yet.</p>
                     )}
                   </div>
-                  {dbChartData && <ResponseGraph chartData={dbChartData} />}
+                  {/* {dbChartData && <ResponseGraph chartData={dbChartData} />}
                   {jsonChartData && <JsonChart data={jsonChartData} />}
-                  {fileData && <GraphComponent data={fileData} />}
+                  {fileData && <GraphComponent data={fileData} />} */}
+                  {jsonChartData ? (
+                    <JsonChart jsonData={jsonChartData} />
+                  ) : dbChartData ? (
+                    <ResponseGraph chartData={dbChartData} />
+                  ) : fileData ? (
+                    <GraphComponent data={fileData} />
+                  ) : null}
                 </div>
               </div>
             ) : (

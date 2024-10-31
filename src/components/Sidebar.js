@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { ChevronRight, ChevronLeft, PlusCircle, Trash2 } from "lucide-react"; // Import Trash Icon
+import { ChevronRight, ChevronLeft, PlusCircle, Trash2 } from "lucide-react";
 
-function Sidebar({ uploadedFiles, onFileClick, onNewChatClick, onDeleteChat, onJsonChartClick  }) {
+function Sidebar({ uploadedFiles, onFileClick, onNewChatClick, onDeleteChat, onJsonChartClick }) {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
 
   useEffect(() => {
-    setSelectedFileIndex(null); // Reset the selected file index
+    setSelectedFileIndex(null);
   }, [uploadedFiles]);
 
   const handleFileClick = (file, index) => {
@@ -16,14 +16,14 @@ function Sidebar({ uploadedFiles, onFileClick, onNewChatClick, onDeleteChat, onJ
   };
 
   const handleNewChatClick = () => {
-    setSelectedFileIndex(null); // Deselect any file
-    localStorage.removeItem("selectedFileName"); // Clear saved file
-    onNewChatClick(); // Trigger the function to link the previous chat context
+    setSelectedFileIndex(null);
+    localStorage.removeItem("selectedFileName");
+    onNewChatClick();
   };
 
   const handleDeleteClick = (fileName, event) => {
-    event.stopPropagation(); // Prevents triggering file click when deleting
-    onDeleteChat(fileName); // Call the delete handler passed from parent
+    event.stopPropagation();
+    onDeleteChat(fileName);
   };
 
   return (
@@ -49,7 +49,6 @@ function Sidebar({ uploadedFiles, onFileClick, onNewChatClick, onDeleteChat, onJ
       <div className={`uploaded-files-list ${collapsed ? "hidden" : ""}`}>
         {uploadedFiles && uploadedFiles.length > 0 ? (
           <>
-            {" "}
             <ul className="file-list">
               {uploadedFiles.map((file, index) => (
                 <li

@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft, PlusCircle, Trash2 } from "lucide-react";
 
-function Sidebar({ uploadedFiles, onFileClick, onNewChatClick, onDeleteChat, onJsonChartClick }) {
+function Sidebar({
+  uploadedFiles,
+  onFileClick,
+  onNewChatClick,
+  onDeleteChat,
+  onJsonChartClick,
+  jsonChartName,  
+}) {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
 
@@ -48,31 +55,33 @@ function Sidebar({ uploadedFiles, onFileClick, onNewChatClick, onDeleteChat, onJ
 
       <div className={`uploaded-files-list ${collapsed ? "hidden" : ""}`}>
         {uploadedFiles && uploadedFiles.length > 0 ? (
-          <>
-            <ul className="file-list">
-              {uploadedFiles.map((file, index) => (
-                <li
-                  key={index}
-                  onClick={() => handleFileClick(file, index)}
-                  className={selectedFileIndex === index ? "selected" : ""}
+          <ul className="file-list">
+            {uploadedFiles.map((file, index) => (
+              <li
+                key={index}
+                onClick={() => handleFileClick(file, index)}
+                className={selectedFileIndex === index ? "selected" : ""}
+              >
+                <span>{file.fileName}</span>
+                <button
+                  onClick={(event) => handleDeleteClick(file.fileName, event)}
+                  className="delete-btn ml-2"
                 >
-                  <span>{file.fileName}</span>
-                  <button
-                    onClick={(event) => handleDeleteClick(file.fileName, event)}
-                    className="delete-btn ml-2"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </li>
-              ))}
-            </ul>
-            {/* <button onClick={onJsonChartClick} className="json-chart-btn">
-              View JSON Chart
-            </button> */}
-          </>
+                  <Trash2 size={16} />
+                </button>
+              </li>
+            ))}
+          </ul>
         ) : (
           <p>No files uploaded yet.</p>
         )}
+
+        {/* Separate JSON Chart Link */}
+        <div className="json-chart-section mt-4">
+          <button onClick={onJsonChartClick} className="json-chart-btn">
+            {`View JSON Chart `}
+          </button>
+        </div>
       </div>
     </div>
   );

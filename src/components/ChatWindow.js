@@ -134,8 +134,7 @@ function ChatWindow() {
     return `${name}_01.csv`;
   };
 
-  const handleNewChatClick = () => {
-    // Generate the new chat name and remove any file extension
+  const handleNewChatClick = () => { 
     const linkedChatName = incrementSuffix(selectedFileName).replace(
       /\.[^/.]+$/,
       ""
@@ -153,7 +152,7 @@ function ChatWindow() {
 
     setFileData(null);
     setQueries(newChat.queries);
-    setSelectedFileName(linkedChatName); // Set the name without extension
+    setSelectedFileName(linkedChatName);  
     setShowChatActions(false);
     setIsNewChat(true);
 
@@ -163,8 +162,7 @@ function ChatWindow() {
   const handleAddDataSourceClick = () => {
     setShowChatActions(true);
     setIsNewChat(false);
-  };
-  // Update the sendMessage function
+  }; 
   const sendMessage = async () => {
     if (message.trim()) {
       setLoading(true);
@@ -173,8 +171,7 @@ function ChatWindow() {
         const newQuery = { query: message, response: apiResponse };
         setQueries((prevQueries) => [...prevQueries, newQuery]);
         setMessage("");
-
-        // Update the queries for the current file in uploadedFiles
+ 
         const updatedFiles = uploadedFiles.map((file) =>
           file.fileName === selectedFileName
             ? { ...file, queries: [...file.queries, newQuery] }
@@ -189,17 +186,15 @@ function ChatWindow() {
       }
     }
   };
-
-  // Update the handleTextArea1Submit function similarly
+ 
   const handleTextArea1Submit = async () => {
     if (textArea1.trim()) {
       try {
         const response = await fetchQueryResponse(textArea1);
-        const newQuery = { query: textArea1, response: response || staticData };
+        const newQuery = { query: textArea1, response: response };
         setQueries((prevQueries) => [...prevQueries, newQuery]);
         setTextArea1("");
-
-        // Save the query to the current file's queries in uploadedFiles
+ 
         const updatedFiles = uploadedFiles.map((file) =>
           file.fileName === selectedFileName
             ? { ...file, queries: [...file.queries, newQuery] }
@@ -212,8 +207,7 @@ function ChatWindow() {
       }
     }
   };
-
-  // Update the handleFileClick function to load the saved queries
+ 
   const handleFileClick = (data, queries, fileName) => {
     // Strip extension from fileName
     const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
@@ -223,94 +217,17 @@ function ChatWindow() {
       queries,
       selectedFileName: fileNameWithoutExtension,
     });
-
-    // Retrieve the queries for the selected file and set them in state
+ 
     const selectedFile = uploadedFiles.find(
       (file) => file.fileName === fileNameWithoutExtension
     );
     const selectedQueries = selectedFile ? selectedFile.queries : [];
 
     setFileData(data || null);
-    setQueries(selectedQueries); // Load saved queries for this file
-    setSelectedFileName(fileNameWithoutExtension); // Use name without extension
+    setQueries(selectedQueries);  
+    setSelectedFileName(fileNameWithoutExtension);  
     setShowChatActions(false);
     setIsNewChat(false);
-  };
-
-  const staticData = {
-    chart_type: "bar",
-    data: [
-      {
-        product: "Gadget A",
-        customer_segment: "Small Business",
-        total_sales: 4500.0,
-      },
-      {
-        product: "Gadget B",
-        customer_segment: "Enterprise",
-        total_sales: 5000.0,
-      },
-      {
-        product: "Gadget B",
-        customer_segment: "Small Business",
-        total_sales: 4000.0,
-      },
-      {
-        product: "Gadget X",
-        customer_segment: "Small Business",
-        total_sales: 9000.0,
-      },
-      {
-        product: "Gadget Y",
-        customer_segment: "Consumer",
-        total_sales: 7200.0,
-      },
-      {
-        product: "Gadget Y",
-        customer_segment: "Small Business",
-        total_sales: 9000.0,
-      },
-      {
-        product: "Service Package B",
-        customer_segment: "Enterprise",
-        total_sales: 22500.0,
-      },
-      {
-        product: "Service Package C",
-        customer_segment: "Enterprise",
-        total_sales: 30000.0,
-      },
-      {
-        product: "Widget A",
-        customer_segment: "Consumer",
-        total_sales: 4000.0,
-      },
-      {
-        product: "Widget A",
-        customer_segment: "Small Business",
-        total_sales: 5000.0,
-      },
-      {
-        product: "Widget B",
-        customer_segment: "Enterprise",
-        total_sales: 9000.0,
-      },
-      {
-        product: "Widget X",
-        customer_segment: "Consumer",
-        total_sales: 12000.0,
-      },
-      {
-        product: "Widget X",
-        customer_segment: "Small Business",
-        total_sales: 9000.0,
-      },
-      {
-        product: "Widget Y",
-        customer_segment: "Consumer",
-        total_sales: 14400.0,
-      },
-    ],
   };
 
   return (
@@ -386,6 +303,20 @@ function ChatWindow() {
                   </div>
                 )}
               </div>
+            ) : jsonChartData? (
+              <div className="message-container chat-msg-container">
+                <div className="bg-white flex flex-col text-black">
+                  <div className="submitted-queries-container h-40">
+                    <ul>
+                      <li className="mb-4  shadow-lg rounded-lg ">
+                        <div className="mt-2">
+                          <JsonChart chartData={jsonChartData} />
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             ) : fileData || queries.length ? (
               <div className="message-container chat-msg-container">
                 <div className="bg-white flex flex-col text-black">
@@ -416,16 +347,13 @@ function ChatWindow() {
                       <p className="text-gray-500">No queries submitted yet.</p>
                     )}
                   </div>
-                  {/* {dbChartData && <ResponseGraph chartData={dbChartData} />}
-                  {jsonChartData && <JsonChart data={jsonChartData} />}
-                  {fileData && <GraphComponent data={fileData} />} */}
-                  {jsonChartData ? (
-                    <JsonChart jsonData={jsonChartData} />
+                  {/* {jsonChartData ? (
+                    <JsonChart chartData={jsonChartData} />
                   ) : dbChartData ? (
                     <ResponseGraph chartData={dbChartData} />
                   ) : fileData ? (
                     <GraphComponent data={fileData} />
-                  ) : null}
+                  ) : null} */}
                 </div>
               </div>
             ) : (

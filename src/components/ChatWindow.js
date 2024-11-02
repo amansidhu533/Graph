@@ -277,8 +277,7 @@ function ChatWindow() {
               setQueries(queries);
               setSelectedFileName(fileName);
               setShowChatActions(false);
-              setIsNewChat(false);
-              setJsonChartData(null);
+              setIsNewChat(false); 
             }}
             onNewChatClick={handleNewChatClick}
             onDeleteChat={handleDeleteChat}
@@ -347,13 +346,13 @@ function ChatWindow() {
                       <p className="text-gray-500">No queries submitted yet.</p>
                     )}
                   </div>
-                  {/* {jsonChartData ? (
+                  {jsonChartData ? (
                     <JsonChart chartData={jsonChartData} />
                   ) : dbChartData ? (
                     <ResponseGraph chartData={dbChartData} />
                   ) : fileData ? (
                     <GraphComponent data={fileData} />
-                  ) : null} */}
+                  ) : null}
                 </div>
               </div>
             ) : (

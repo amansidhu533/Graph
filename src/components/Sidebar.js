@@ -7,19 +7,25 @@ function Sidebar({
   onNewChatClick,
   onDeleteChat,
   onJsonChartClick,
-  jsonChartName,  
+  jsonChartName,
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
 
   useEffect(() => {
+    // Reset selected file index when uploaded files change
     setSelectedFileIndex(null);
   }, [uploadedFiles]);
 
   const handleFileClick = (file, index) => {
     setSelectedFileIndex(index);
     localStorage.setItem("selectedFileName", file.fileName);
-    onFileClick(file.data, file.queries, file.fileName);
+
+    if (file.type === "json") {
+      onJsonChartClick(file.data, file.fileName); // Trigger JSON chart display
+    } else {
+      onFileClick(file.data, file.queries, file.fileName); // Display non-JSON data
+    }
   };
 
   const handleNewChatClick = () => {
@@ -29,6 +35,7 @@ function Sidebar({
   };
 
   const handleDeleteClick = (fileName, event) => {
+    // Prevent triggering the parent click event
     event.stopPropagation();
     onDeleteChat(fileName);
   };
@@ -56,13 +63,23 @@ function Sidebar({
       <div className={`uploaded-files-list ${collapsed ? "hidden" : ""}`}>
         {uploadedFiles && uploadedFiles.length > 0 ? (
           <ul className="file-list">
-            {uploadedFiles.map((file, index) => (
-              <li
-                key={index}
-                onClick={() => handleFileClick(file, index)}
-                className={selectedFileIndex === index ? "selected" : ""}
-              >
-                <span>{file.fileName}</span>
+            {uploadedFiles.map((file) => (
+              <li key={file.fileName} className="file-item">
+                {file.type === "json" ? (
+                  // Click to display JSON chart
+                  <span onClick={() => handleFileClick(file)}>
+                    {file.fileName} {file.type === "json" ? "(JSON)" : ""}
+                  </span>
+                ) : (
+                  // Click to display other file data
+                  <span
+                    onClick={() =>
+                      handleFileClick(file, uploadedFiles.indexOf(file))
+                    }
+                  >
+                    {file.fileName}
+                  </span>
+                )}
                 <button
                   onClick={(event) => handleDeleteClick(file.fileName, event)}
                   className="delete-btn ml-2"
@@ -75,13 +92,6 @@ function Sidebar({
         ) : (
           <p>No files uploaded yet.</p>
         )}
-
-        {/* Separate JSON Chart Link */}
-        <div className="json-chart-section mt-4">
-          <button onClick={onJsonChartClick} className="json-chart-btn">
-            {`View JSON Chart `}
-          </button>
-        </div>
       </div>
     </div>
   );

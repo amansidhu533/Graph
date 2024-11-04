@@ -12,19 +12,21 @@ function ConnectDBModal({ handleCloseModal, handleDBOptionSubmit }) {
   const handleTokenChange = (event) => {
     setToken(event.target.value);
   };
- 
 
   const handleSubmit = async () => {
     try {
-      // Convert the JSON text input to a Blob and use it as a 'file'
       const jsonBlob = new Blob([json], { type: "application/json" });
-      const result = await fetchFileJsonData(jsonBlob); // Call fetchFileJsonData
+      const result = await fetchFileJsonData(jsonBlob);  
 
-      console.log("File processed successfully:", result);
-
-      // Pass the chart data to the ChatWindow via handleDBOptionSubmit
-      handleDBOptionSubmit({ json, token, chartData: result.chart_data });
-      handleCloseModal(); // Close the modal after submitting
+      const fileName =
+        json.substring(json.lastIndexOf("/") + 1) || "Uploaded JSON";
+      handleDBOptionSubmit({
+        json,
+        token,
+        chartData: result.chart_data,
+        fileName,
+      });  
+      handleCloseModal();
     } catch (error) {
       console.error("Error during submission:", error);
     }

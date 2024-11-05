@@ -16,16 +16,22 @@ function ConnectDBModal({ handleCloseModal, handleDBOptionSubmit }) {
   const handleSubmit = async () => {
     try {
       const jsonBlob = new Blob([json], { type: "application/json" });
-      const result = await fetchFileJsonData(jsonBlob);  
+      const result = await fetchFileJsonData(jsonBlob);
 
       const fileName =
-        json.substring(json.lastIndexOf("/") + 1) || "Uploaded JSON";
-      handleDBOptionSubmit({
+        json.substring(json.lastIndexOf("/") + 1) || result.doctype;
+
+      // Store the result in local storage
+      const storedData = {
         json,
         token,
         chartData: result.chart_data,
         fileName,
-      });  
+      };
+      localStorage.setItem("jsonFileData", JSON.stringify(storedData));
+
+      handleDBOptionSubmit(storedData);  
+      console.log(result, "Result-----------");
       handleCloseModal();
     } catch (error) {
       console.error("Error during submission:", error);

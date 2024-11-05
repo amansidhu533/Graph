@@ -38,23 +38,23 @@ function ChatWindow() {
     if (chartData) {
       setJsonChartData(chartData); // Sets JSON data to display the chart
       setDbChartData(null); // Clears DB data chart if shown
-  
+
       // Create JSON file object with type and add it to the uploaded files
       const newJsonFile = {
         fileName, // Dynamic JSON file name
         data: chartData,
         type: "json",
       };
-  
+
       const updatedFiles = [...uploadedFiles, newJsonFile];
       setUploadedFiles(updatedFiles);
       localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles)); // Store all files in localStorage
-  
+
       setFileData(null); // Clear previous data
       setShowChatActions(false);
     }
   };
-  
+
   useEffect(() => {
     const savedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
     const updatedFiles = savedFiles.map((file) => ({
@@ -63,11 +63,11 @@ function ChatWindow() {
     }));
     setUploadedFiles(updatedFiles);
   }, []);
-  
+
   // Inside ChatWindow component
 
   const handleJsonChartClick = (data, fileName) => {
-    setJsonChartData(data); // Sets JSON data to display the chart
+    setJsonChartData(data); // Sets JSON data for the chart
     setDbChartData(null); // Clears any DB chart data
     setSelectedFileName(fileName); // Sets the selected file name
   };
@@ -75,7 +75,6 @@ function ChatWindow() {
   useEffect(() => {
     const savedFileName = localStorage.getItem("selectedFileName");
     if (savedFileName) {
-      // Remove the file extension from the saved file name, if it has one
       const fileNameWithoutExtension = savedFileName.replace(/\.[^/.]+$/, "");
       setSelectedFileName(fileNameWithoutExtension);
     }
@@ -105,9 +104,8 @@ function ChatWindow() {
     if (fileNameToDelete === selectedFileName) {
       setFileData(null);
       setQueries([]);
-      setSelectedFileName("Chat Application"); // Reset selectedFileName to default
+      setSelectedFileName("Chat Application");
 
-      // Update local storage for selectedFileName if there are no files left
       if (updatedFiles.length === 0) {
         localStorage.removeItem("selectedFileName");
       } else {
@@ -307,10 +305,12 @@ function ChatWindow() {
               setSelectedFileName(fileName);
               setShowChatActions(false);
               setIsNewChat(false);
+              setJsonChartData(null);
+              setDbChartData(null);
             }}
             onNewChatClick={handleNewChatClick}
             onDeleteChat={handleDeleteChat}
-            onJsonChartClick={() => setJsonChartData(null)}
+            onJsonChartClick={handleJsonChartClick} // Update here
           />
 
           <div className="chat-window h-full">

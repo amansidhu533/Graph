@@ -20,13 +20,14 @@ function Sidebar({
   const handleFileClick = (file, index) => {
     setSelectedFileIndex(index);
     localStorage.setItem("selectedFileName", file.fileName);
-
+  
     if (file.type === "json") {
       onJsonChartClick(file.data, file.fileName); // Trigger JSON chart display
     } else {
       onFileClick(file.data, file.queries, file.fileName); // Display non-JSON data
     }
   };
+  
 
   const handleNewChatClick = () => {
     setSelectedFileIndex(null);

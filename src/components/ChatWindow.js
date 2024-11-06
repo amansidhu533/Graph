@@ -9,7 +9,8 @@ import GraphComponent from "./Graph";
 import AddDataSource from "../assets/images/add_datasource.png";
 import DBConnect from "../assets/images/database-connect1.gif";
 import { fetchQueryResponse } from "../modules";
-import ResponseGraph from "./ResponseGraph"; 
+import ResponseGraph from "./ResponseGraph";
+import JsonChart from "./JsonChart";
 
 function ChatWindow() {
   const [message, setMessage] = useState("");
@@ -26,10 +27,14 @@ function ChatWindow() {
   const [queries, setQueries] = useState([]);
   const [selectedFileName, setSelectedFileName] = useState("Chat Application");
   const [previousChatContext, setPreviousChatContext] = useState(null);
-  const [isNewChat, setIsNewChat] = useState(false); 
+  const [isNewChat, setIsNewChat] = useState(false);
+  const [databaseName, setDatabaseName] = useState("My Database");
+  const [apiResponse, setApiResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dbChartData, setDbChartData] = useState(null);
-  const [jsonChartData, setJsonChartData] = useState(null); 
+  const [jsonChartData, setJsonChartData] = useState(null);
+  const [jsonQueries, setJsonQueries] = useState([]);
+  const [dataSourceQueries, setDataSourceQueries] = useState([]);
 
   
   const handleDBOptionSubmit = ({ json, token, chartData, fileName }) => {
@@ -252,19 +257,18 @@ function ChatWindow() {
       queries,
       selectedFileName: fileName,
     });
-  
+
     const selectedFile = uploadedFiles.find(
       (file) => file.fileName === fileName
     );
     const selectedQueries = selectedFile ? selectedFile.queries : [];
     setFileData(data);
-    setQueries(selectedQueries);   
+    setQueries(selectedQueries);
     setSelectedFileName(fileName);
     setJsonChartData(null);
     setShowChatActions(false);
     setIsNewChat(false);
   };
-  
 
   return (
     <Resizable

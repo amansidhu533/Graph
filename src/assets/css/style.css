@@ -661,6 +661,7 @@ button.add-datasource-btn img {
   margin: 20px;
   font-weight: 400;
   font-size: 14px;
+  list-style: none;
 }
 
 .submitted-queries-container li p {

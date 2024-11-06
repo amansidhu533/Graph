@@ -9,8 +9,7 @@ import GraphComponent from "./Graph";
 import AddDataSource from "../assets/images/add_datasource.png";
 import DBConnect from "../assets/images/database-connect1.gif";
 import { fetchQueryResponse } from "../modules";
-import ResponseGraph from "./ResponseGraph";
-import JsonChart from "./JsonChart";
+import ResponseGraph from "./ResponseGraph"; 
 
 function ChatWindow() {
   const [message, setMessage] = useState("");
@@ -27,16 +26,12 @@ function ChatWindow() {
   const [queries, setQueries] = useState([]);
   const [selectedFileName, setSelectedFileName] = useState("Chat Application");
   const [previousChatContext, setPreviousChatContext] = useState(null);
-  const [isNewChat, setIsNewChat] = useState(false);
-  const [databaseName, setDatabaseName] = useState("My Database");
-  const [apiResponse, setApiResponse] = useState(null);
+  const [isNewChat, setIsNewChat] = useState(false); 
   const [loading, setLoading] = useState(false);
   const [dbChartData, setDbChartData] = useState(null);
-  const [jsonChartData, setJsonChartData] = useState(null);
-  const [jsonQueries, setJsonQueries] = useState([]);
-  const [dataSourceQueries, setDataSourceQueries] = useState([]);
+  const [jsonChartData, setJsonChartData] = useState(null); 
 
-
+  
   const handleDBOptionSubmit = ({ json, token, chartData, fileName }) => {
     if (chartData) {
       setJsonChartData(chartData); // Sets JSON data to display the chart
@@ -201,22 +196,25 @@ function ChatWindow() {
     setShowChatActions(true);
     setIsNewChat(false);
   };
+
   const sendMessage = async () => {
     if (message.trim()) {
       setLoading(true);
       try {
         const apiResponse = await fetchQueryResponse(message);
         const newQuery = { query: message, response: apiResponse };
-        setQueries((prevQueries) => [...prevQueries, newQuery]);
-        setMessage("");
 
+        // Update queries for the currently selected file (JSON or non-JSON)
         const updatedFiles = uploadedFiles.map((file) =>
           file.fileName === selectedFileName
             ? { ...file, queries: [...file.queries, newQuery] }
             : file
         );
+
         setUploadedFiles(updatedFiles);
         localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
+        setMessage("");
+        setQueries((prevQueries) => [...prevQueries, newQuery]);
       } catch (error) {
         console.error("Error sending message:", error);
       } finally {
@@ -225,23 +223,22 @@ function ChatWindow() {
     }
   };
 
-  // Update handleTextArea1Submit to handle JSON file queries
   const handleTextArea1Submit = async () => {
     if (textArea1.trim()) {
       try {
         const response = await fetchQueryResponse(textArea1);
-        const newQuery = { query: textArea1, response: response };
-        setQueries((prevQueries) => [...prevQueries, newQuery]);
-        setTextArea1("");
+        const newQuery = { query: textArea1, response };
 
-        // Update uploadedFiles to include the new query for JSON or Data Source
         const updatedFiles = uploadedFiles.map((file) =>
           file.fileName === selectedFileName
             ? { ...file, queries: [...file.queries, newQuery] }
             : file
         );
+
         setUploadedFiles(updatedFiles);
         localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
+        setQueries((prevQueries) => [...prevQueries, newQuery]);
+        setTextArea1("");
       } catch (error) {
         console.error("Error sending query:", error);
       }
@@ -255,18 +252,19 @@ function ChatWindow() {
       queries,
       selectedFileName: fileName,
     });
-
+  
     const selectedFile = uploadedFiles.find(
       (file) => file.fileName === fileName
     );
     const selectedQueries = selectedFile ? selectedFile.queries : [];
     setFileData(data);
-    setQueries(selectedQueries);
+    setQueries(selectedQueries);   
     setSelectedFileName(fileName);
     setJsonChartData(null);
     setShowChatActions(false);
     setIsNewChat(false);
   };
+  
 
   return (
     <Resizable
@@ -310,15 +308,6 @@ function ChatWindow() {
         <div className="main-content">
           <Sidebar
             uploadedFiles={uploadedFiles}
-            // onFileClick={(data, queries, fileName) => {
-            //   setFileData(data);
-            //   setQueries(queries);
-            //   setSelectedFileName(fileName);
-            //   setShowChatActions(false);
-            //   setIsNewChat(false);
-            //   setJsonChartData(null);
-            //   setDbChartData(null);
-            // }}
             onFileClick={handleFileClick}
             onNewChatClick={handleNewChatClick}
             onDeleteChat={handleDeleteChat}
@@ -343,57 +332,26 @@ function ChatWindow() {
                   </div>
                 )}
               </div>
-            ) : jsonChartData ? (
+            ) : jsonChartData || fileData ? (
               <div className="message-container chat-msg-container">
                 <div className="bg-white flex flex-col text-black">
                   <div className="submitted-queries-container h-40">
-                    <ul>
-                      <li className="mb-4  shadow-lg rounded-lg ">
-                        <div className="mt-2">
-                          <JsonChart chartData={jsonChartData} />
-                        </div>
-                      </li>
-                    </ul>
+                    {uploadedFiles
+                      .find((file) => file.fileName === selectedFileName)
+                      ?.queries.map((query, index) => (
+                        <li key={index} className="mb-4 shadow-lg rounded-lg">
+                          <div className="bg-gray-100 p-3 rounded-lg mb-4 mt-4 font-medium">
+                            <strong>Q:</strong> {query.query}
+                          </div>
+                          {query.response && (
+                            <div className="mt-2">
+                              <ResponseGraph chartData={query.response} />
+                            </div>
+                          )}
+                        </li>
+                      ))}
                   </div>
-                </div>
-              </div>
-            ) : fileData || queries.length ? (
-              <div className="message-container chat-msg-container">
-                <div className="bg-white flex flex-col text-black">
-                  <div className="submitted-queries-container h-40">
-                    {queries.length > 0 ? (
-                      <ul>
-                        {queries
-                          .slice()
-                          .reverse()
-                          .map((query, index) => (
-                            <li
-                              key={index}
-                              className="mb-4  shadow-lg rounded-lg "
-                            >
-                              <div className="bg-gray-100 p-3 rounded-lg mb-4 font-medium">
-                                <strong>Q:</strong> {query.query}
-                              </div>
-                              {query.response && (
-                                <div className="mt-2">
-                                  <strong>Title: </strong> {query.query}
-                                  <ResponseGraph chartData={query.response} />
-                                </div>
-                              )}
-                            </li>
-                          ))}
-                      </ul>
-                    ) : (
-                      <p className="text-gray-500">No queries submitted yet.</p>
-                    )}
-                  </div>
-                  {jsonChartData ? (
-                    <JsonChart chartData={jsonChartData} />
-                  ) : dbChartData ? (
-                    <ResponseGraph chartData={dbChartData} />
-                  ) : fileData ? (
-                    <GraphComponent data={fileData} />
-                  ) : null}
+                  {fileData && <GraphComponent data={fileData} />}
                 </div>
               </div>
             ) : (

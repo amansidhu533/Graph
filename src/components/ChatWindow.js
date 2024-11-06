@@ -33,6 +33,9 @@ function ChatWindow() {
   const [loading, setLoading] = useState(false);
   const [dbChartData, setDbChartData] = useState(null);
   const [jsonChartData, setJsonChartData] = useState(null);
+  const [jsonQueries, setJsonQueries] = useState([]);
+  const [dataSourceQueries, setDataSourceQueries] = useState([]);
+
 
   const handleDBOptionSubmit = ({ json, token, chartData, fileName }) => {
     if (chartData) {
@@ -44,6 +47,7 @@ function ChatWindow() {
         fileName, // Dynamic JSON file name
         data: chartData,
         type: "json",
+        queries: [],
       };
 
       const updatedFiles = [...uploadedFiles, newJsonFile];
@@ -70,6 +74,13 @@ function ChatWindow() {
     setJsonChartData(data); // Sets JSON data for the chart
     setDbChartData(null); // Clears any DB chart data
     setSelectedFileName(fileName); // Sets the selected file name
+
+    // Find existing queries for this JSON file, if any
+    const selectedFile = uploadedFiles.find(
+      (file) => file.fileName === fileName && file.type === "json"
+    );
+    const selectedQueries = selectedFile ? selectedFile.queries : [];
+    setQueries(selectedQueries);
   };
 
   useEffect(() => {
@@ -214,6 +225,7 @@ function ChatWindow() {
     }
   };
 
+  // Update handleTextArea1Submit to handle JSON file queries
   const handleTextArea1Submit = async () => {
     if (textArea1.trim()) {
       try {
@@ -222,6 +234,7 @@ function ChatWindow() {
         setQueries((prevQueries) => [...prevQueries, newQuery]);
         setTextArea1("");
 
+        // Update uploadedFiles to include the new query for JSON or Data Source
         const updatedFiles = uploadedFiles.map((file) =>
           file.fileName === selectedFileName
             ? { ...file, queries: [...file.queries, newQuery] }
@@ -235,24 +248,22 @@ function ChatWindow() {
     }
   };
 
+  // Function to handle file clicks for JSON or Data Source files
   const handleFileClick = (data, queries, fileName) => {
-    // Strip extension from fileName
-    const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
-
     setPreviousChatContext({
       fileData: data,
       queries,
-      selectedFileName: fileNameWithoutExtension,
+      selectedFileName: fileName,
     });
 
     const selectedFile = uploadedFiles.find(
-      (file) => file.fileName === fileNameWithoutExtension
+      (file) => file.fileName === fileName
     );
     const selectedQueries = selectedFile ? selectedFile.queries : [];
-    setFileData(data); // Sets data for the chart component
-    setQueries(queries); // Sets queries for data source files
+    setFileData(data);
+    setQueries(selectedQueries);
     setSelectedFileName(fileName);
-    setJsonChartData(null); // Clears JSON chart data
+    setJsonChartData(null);
     setShowChatActions(false);
     setIsNewChat(false);
   };
@@ -299,15 +310,16 @@ function ChatWindow() {
         <div className="main-content">
           <Sidebar
             uploadedFiles={uploadedFiles}
-            onFileClick={(data, queries, fileName) => {
-              setFileData(data);
-              setQueries(queries);
-              setSelectedFileName(fileName);
-              setShowChatActions(false);
-              setIsNewChat(false);
-              setJsonChartData(null);
-              setDbChartData(null);
-            }}
+            // onFileClick={(data, queries, fileName) => {
+            //   setFileData(data);
+            //   setQueries(queries);
+            //   setSelectedFileName(fileName);
+            //   setShowChatActions(false);
+            //   setIsNewChat(false);
+            //   setJsonChartData(null);
+            //   setDbChartData(null);
+            // }}
+            onFileClick={handleFileClick}
             onNewChatClick={handleNewChatClick}
             onDeleteChat={handleDeleteChat}
             onJsonChartClick={handleJsonChartClick} // Update here

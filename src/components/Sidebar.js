@@ -20,15 +20,13 @@ function Sidebar({
   const handleFileClick = (file, index) => {
     setSelectedFileIndex(index);
     localStorage.setItem("selectedFileName", file.fileName);
-  
+
     if (file.type === "json") {
       onJsonChartClick(file.data, file.fileName); // Trigger JSON chart display and query
     } else {
       onFileClick(file.data, file.queries, file.fileName); // Display non-JSON data
     }
   };
-  
-  
 
   const handleNewChatClick = () => {
     setSelectedFileIndex(null);
@@ -65,23 +63,14 @@ function Sidebar({
       <div className={`uploaded-files-list ${collapsed ? "hidden" : ""}`}>
         {uploadedFiles && uploadedFiles.length > 0 ? (
           <ul className="file-list">
-            {uploadedFiles.map((file) => (
-              <li key={file.fileName} className="file-item">
-                {file.type === "json" ? (
-                  // Click to display JSON chart
-                  <span onClick={() => handleFileClick(file)}>
-                    {file.fileName} {file.type === "json" ? "(JSON)" : ""}
-                  </span>
-                ) : (
-                  // Click to display other file data
-                  <span
-                    onClick={() =>
-                      handleFileClick(file, uploadedFiles.indexOf(file))
-                    }
-                  >
-                    {file.fileName}
-                  </span>
-                )}
+            {uploadedFiles.map((file, index) => (
+              <li
+                key={file.fileName}
+                className={`file-item ${index === selectedFileIndex ? "selected" : ""}`}
+              >
+                <span onClick={() => handleFileClick(file, index)}>
+                  {file.fileName} {file.type === "json" ? "(JSON)" : ""}
+                </span>
                 <button
                   onClick={(event) => handleDeleteClick(file.fileName, event)}
                   className="delete-btn ml-2"

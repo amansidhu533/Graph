@@ -11,7 +11,7 @@ export const fetchFileJsonData = async (file) => {
       formData,
       {
         headers: {
-          Authorization: "token fab97082097b4f1:dc449e30fa68116",
+          Authorization: "token fab97082097b4f1:a5a4f38d3d47e50",
           "Content-Type": "multipart/form-data",
         },
       }
@@ -34,7 +34,7 @@ export const fetchFileData = async (file) => {
       formData,
       {
         headers: {
-          Authorization: "token fab97082097b4f1:dc449e30fa68116",
+          Authorization: "token fab97082097b4f1:a5a4f38d3d47e50",
           "Content-Type": "multipart/form-data",
           Cookie:
             "full_name=Guest; sid=Guest; system_user=no; user_id=Guest; user_image=",
@@ -62,7 +62,7 @@ export const fetchQueryResponse = async (
   try {
     const response = await axiosInstance.post(APIs.askQuery, requestBody, {
       headers: {
-        Authorization: "token fab97082097b4f1:dc449e30fa68116",
+        Authorization: "token fab97082097b4f1:a5a4f38d3d47e50",
         "Content-Type": "application/json",
         Cookie:
           "full_name=Guest; sid=Guest; system_user=no; user_id=Guest; user_image=",

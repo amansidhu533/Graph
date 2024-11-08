@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BarChart,
   LineChart,
@@ -35,13 +35,29 @@ function JsonChart({ chartData }) {
   const [chartType, setChartType] = useState("Bar");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const [formattedData, setFormattedData] = useState([]);
+   useEffect(() => {
+    if (chartData) {
+      const data = chartData.labels.map((label, index) => ({
+        label,
+        value: chartData.datasets[0].data[index],
+      }));
+      setFormattedData(data);
+    }
+  }, [chartData]);
+  
   if (!chartData) return <p>No data available for chart.</p>;
 
-  // Transform the data to match the chart format
-  const formattedData = chartData.labels.map((label, index) => ({
-    label,
-    value: chartData.datasets[0].data[index],
-  }));
+  // // Transform the data to match the chart format
+  // const formattedData = chartData.labels.map((label, index) => ({
+  //   label,
+  //   value: chartData.datasets[0].data[index],
+  // }));
+
+
+ 
+
+
   const handleSave = () => {
     const svgElement = document.querySelector(".recharts-wrapper svg");
     const svgData = new XMLSerializer().serializeToString(svgElement);

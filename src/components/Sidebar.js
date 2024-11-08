@@ -22,11 +22,12 @@ function Sidebar({
     localStorage.setItem("selectedFileName", file.fileName);
   
     if (file.type === "json") {
-      onJsonChartClick(file.data, file.fileName); // Trigger JSON chart display
+      onJsonChartClick(file.data, file.fileName); // Trigger JSON chart display and query
     } else {
       onFileClick(file.data, file.queries, file.fileName); // Display non-JSON data
     }
   };
+  
   
 
   const handleNewChatClick = () => {

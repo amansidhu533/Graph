@@ -33,9 +33,7 @@ function ChatWindow() {
   const [loading, setLoading] = useState(false);
   const [dbChartData, setDbChartData] = useState(null);
   const [jsonChartData, setJsonChartData] = useState(null);
-  const [jsonQueries, setJsonQueries] = useState([]);
-  const [dataSourceQueries, setDataSourceQueries] = useState([]);
-
+  const [jsonChatLog, setJsonChatLog] = useState([]);
 
   const handleDBOptionSubmit = ({ json, token, chartData, fileName }) => {
     if (chartData) {
@@ -149,13 +147,11 @@ function ChatWindow() {
     const updatedFiles = [...uploadedFiles, newFile];
     setUploadedFiles(updatedFiles);
     localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
-
     setFileData(parsedData);
     setQueries([]);
     setSelectedFileName(fileName);
-
     setShowChatActions(false);
-
+    setSelectedFileName(fileNameWithoutExtension);
     setIsUploadModalOpen(false);
   };
 
@@ -347,14 +343,35 @@ function ChatWindow() {
               <div className="message-container chat-msg-container">
                 <div className="bg-white flex flex-col text-black">
                   <div className="submitted-queries-container h-40">
-                    <ul>
-                      <li className="mb-4  shadow-lg rounded-lg ">
-                        <div className="mt-2">
-                          <JsonChart chartData={jsonChartData} />
-                        </div>
-                      </li>
-                    </ul>
+                    {queries.length > 0 ? (
+                      <ul>
+                        {queries
+                          .slice()
+                          .reverse()
+                          .map((query, index) => (
+                            <li
+                              key={index}
+                              className="mb-4 shadow-lg rounded-lg"
+                            >
+                              <div className="bg-gray-100 p-3 rounded-lg mb-4 font-medium">
+                                <strong>Q:</strong> {query.query}
+                              </div>
+                              {query.response && (
+                                <div className="mt-2">
+                                  <strong>Title: </strong> {query.query}
+                                  {/* Display ResponseGraph if it's a query response */}
+                                  <ResponseGraph chartData={query.response} />
+                                </div>
+                              )}
+                            </li>
+                          ))}
+                      </ul>
+                    ) : (
+                      <p className="text-gray-500">No queries submitted yet.</p>
+                    )}
                   </div>
+                  {/* Show JsonChart if jsonChartData is active */}
+                  <JsonChart chartData={jsonChartData} />
                 </div>
               </div>
             ) : fileData || queries.length ? (
@@ -369,7 +386,7 @@ function ChatWindow() {
                           .map((query, index) => (
                             <li
                               key={index}
-                              className="mb-4  shadow-lg rounded-lg "
+                              className="mb-4 shadow-lg rounded-lg"
                             >
                               <div className="bg-gray-100 p-3 rounded-lg mb-4 font-medium">
                                 <strong>Q:</strong> {query.query}
@@ -377,6 +394,7 @@ function ChatWindow() {
                               {query.response && (
                                 <div className="mt-2">
                                   <strong>Title: </strong> {query.query}
+                                  {/* Display ResponseGraph if it's a query response */}
                                   <ResponseGraph chartData={query.response} />
                                 </div>
                               )}
@@ -387,13 +405,8 @@ function ChatWindow() {
                       <p className="text-gray-500">No queries submitted yet.</p>
                     )}
                   </div>
-                  {jsonChartData ? (
-                    <JsonChart chartData={jsonChartData} />
-                  ) : dbChartData ? (
-                    <ResponseGraph chartData={dbChartData} />
-                  ) : fileData ? (
-                    <GraphComponent data={fileData} />
-                  ) : null}
+                  {/* Show GraphComponent if fileData is active */}
+                  <GraphComponent data={fileData} />
                 </div>
               </div>
             ) : (

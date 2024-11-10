@@ -28,12 +28,12 @@ function ChatWindow() {
   const [selectedFileName, setSelectedFileName] = useState("Chat Application");
   const [previousChatContext, setPreviousChatContext] = useState(null);
   const [isNewChat, setIsNewChat] = useState(false);
-  const [databaseName, setDatabaseName] = useState("My Database");
-  const [apiResponse, setApiResponse] = useState(null);
+  // const [databaseName, setDatabaseName] = useState("My Database");
+  // const [apiResponse, setApiResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dbChartData, setDbChartData] = useState(null);
   const [jsonChartData, setJsonChartData] = useState(null);
-  const [jsonChatLog, setJsonChatLog] = useState([]);
+  // const [jsonChatLog, setJsonChatLog] = useState([]);
 
   const handleDBOptionSubmit = ({ json, token, chartData, fileName }) => {
     if (chartData) {
@@ -289,9 +289,9 @@ function ChatWindow() {
             Assistant for <span>{selectedFileName}</span>
           </h2>
           <div className="top-bar-buttons">
-            <span className="db-connect" title={selectedFileName}>
+            {/* <span className="db-connect" title={selectedFileName}>
               <img src={DBConnect} alt={selectedFileName} />
-            </span>
+            </span> */}
             <ThemeToggle />
             <button
               onClick={handleAddDataSourceClick}

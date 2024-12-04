@@ -79,13 +79,13 @@ function DBConnectChart({ dbData }) {
         );
       case "Line":
         return (
-          <LineChart
-            data={formattedData}
-            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-          >
+          <LineChart data={dbData.datasets[0].values.map((value, index) => ({
+            label: dbData.labels[index],
+            value: value,
+          }))}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="label" label={{ value: "Labels", position: "insideBottom", offset: -5 }} />
-            <YAxis label={{ value: "Values", angle: -90, position: "insideLeft" }} />
+            <XAxis dataKey="label" />
+            <YAxis />
             <Tooltip />
             <Legend />
             <Line type="monotone" dataKey="value" stroke="#8884d8" />

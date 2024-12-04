@@ -13,8 +13,7 @@ function Sidebar({
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
   const [localFiles, setLocalFiles] = useState([]);
 
-  useEffect(() => {
-    // Load JSON files from localStorage on mount
+  useEffect(() => { 
     const storedJsonData = localStorage.getItem("jsonFileData");
     if (storedJsonData) {
       try {
@@ -52,9 +51,11 @@ function Sidebar({
     localStorage.setItem("selectedFileName", file.fileName);
 
     if (file.fileName.startsWith("DB_Data")) { 
-      onDBConnectChartClick(file.data, file.fileName);  
+      onDBConnectChartClick(file.data.message, file.fileName);  
+      console.log(file.data.message, "file name: " + file.fileName);
     } else if (file.type === "json") {
       onJsonChartClick(file.data, file.fileName);  
+      console.log(file.data.chartData, "JSON file name: " + file.fileName);
     } else {
       onFileClick(file.data, file.queries, file.fileName);  
     }

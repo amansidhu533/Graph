@@ -41,48 +41,43 @@ function Sidebar({
   }, [allFiles]);
 
   const handleNewChatClick = () => {
-    const newChatId = `chat_${Date.now()}`; // Generate a unique ID for the new chat
-    const newChatIndex = allFiles.length; // Index for the new chat
-    setSelectedFileIndex(newChatIndex); // Highlight the new chat
-    onNewChatClick(newChatId, newChatIndex); // Pass the new chat index to the parent
+    const newChatId = `chat_${Date.now()}`;  
+    const newChatIndex = allFiles.length;  
+    setSelectedFileIndex(newChatIndex);  
+    onNewChatClick(newChatId, newChatIndex); 
   };
 
   const handleFileClick = (file, index) => {
-    setSelectedFileIndex(index); // Set the selected file index when a chat is selected
+    setSelectedFileIndex(index);  
     localStorage.setItem("selectedFileName", file.fileName);
 
-    if (file.fileName.startsWith("DB_Data")) {
-      // If the file name starts with DB_Data, trigger the DBConnect chart
-      onDBConnectChartClick(file.data, file.fileName); // For DBConnect file types
+    if (file.fileName.startsWith("DB_Data")) { 
+      onDBConnectChartClick(file.data, file.fileName);  
     } else if (file.type === "json") {
-      onJsonChartClick(file.data, file.fileName); // For JSON file types
+      onJsonChartClick(file.data, file.fileName);  
     } else {
-      onFileClick(file.data, file.queries, file.fileName); // For other file types
+      onFileClick(file.data, file.queries, file.fileName);  
     }
   };
 
-  const handleDeleteClick = (fileName, event) => {
-    // Prevent triggering the parent click event
+  const handleDeleteClick = (fileName, event) => { 
     event.stopPropagation();
-    onDeleteChat(fileName);
-
-    // If the deleted file is from localStorage, clear it
+    onDeleteChat(fileName); 
     if (localFiles.some((file) => file.fileName === fileName)) {
       localStorage.removeItem("jsonFileData");
       setLocalFiles([]);
     }
-
-    // Adjust the selected index after deletion
+ 
     if (allFiles.length > 0) {
       setSelectedFileIndex((prevIndex) => Math.max(0, prevIndex - 1));
     } else {
-      setSelectedFileIndex(null); // No file selected
+      setSelectedFileIndex(null);  
     }
   };
 
   const handleDBConnectFileClick = (file) => {
     if (onDBConnectChartClick) {
-        onDBConnectChartClick(file.data, file.fileName)  // Call the handler passed as a prop
+        onDBConnectChartClick(file.data, file.fileName)   
     }
 }
 

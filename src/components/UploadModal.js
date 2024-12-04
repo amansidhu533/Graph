@@ -16,14 +16,8 @@ function UploadModal({
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
   const [json, setJson] = useState("");
   const [token, setToken] = useState("");
-  const [isJsonUploadEnabled, setIsJsonUploadEnabled] = useState(false); // New state for checkbox
-
-  const handleTokenChange = (event) => {
-    setToken(event.target.value);
-  };
-  const handleJsonChange = (event) => {
-    setJson(event.target.value);
-  };
+  const [isCsvUploadEnabled, setIsCsvUploadEnabled] = useState(false);
+  const [isJsonUploadEnabled, setIsJsonUploadEnabled] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -85,7 +79,6 @@ function UploadModal({
       localStorage.setItem("jsonFileData", JSON.stringify(storedData));
 
       handleDBOptionSubmit(storedData);
-      console.log(result, "Result-----------");
       handleCloseModal();
       setShowChatActions(false);
     } catch (error) {
@@ -131,60 +124,106 @@ function UploadModal({
   };
 
   const handleJsonCheckboxChange = (e) => {
-    setIsJsonUploadEnabled(e.target.checked); // Toggle the JSON upload button visibility
+    setIsJsonUploadEnabled(e.target.checked);
+    setIsCsvUploadEnabled(false); // Disable CSV when JSON is selected
+  };
+
+  const handleCsvCheckboxChange = (e) => {
+    setIsCsvUploadEnabled(e.target.checked);
+    setIsJsonUploadEnabled(false); // Disable JSON when CSV is selected
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content1">
-        <h3>Upload CSV/Excel</h3>
-        <input type="file" accept=".csv, .xlsx" onChange={handleFileChange} />
-        {selectedFile && (
-          <div className="file-preview">
-            <h4>File Preview:</h4>
-            {filePreview ? (
-              <div className="preview-content">
-                {Array.isArray(filePreview) && filePreview.length > 0 ? (
-                  <table cellSpacing={0} cellPadding={3}>
-                    <thead>
-                      <tr>
-                        {Object.keys(filePreview[0] || {}).map((key) => (
-                          <th key={key}>{key}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filePreview.map((row, index) => (
-                        <tr key={index}>
-                          {Object.values(row).map((value, idx) => (
-                            <td key={idx}>
-                              {value !== undefined ? value : "-"}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p>No data available in CSV</p>
-                )}
-              </div>
-            ) : (
-              <p>No preview available</p>
-            )}
-          </div>
-        )}
+        <h3>Upload CSV/Excel or JSON</h3>
+        
+        {/* Checkboxes for CSV/Excel and JSON */}
         <div>
-          {/* Checkbox to enable/disable JSON upload */}
+          <label>
+            <input
+              type="checkbox"
+              checked={isCsvUploadEnabled}
+              onChange={handleCsvCheckboxChange}
+            /> &nbsp; Upload CSV/Excel
+          </label>
+        </div>
+
+        <div>
           <label>
             <input
               type="checkbox"
               checked={isJsonUploadEnabled}
               onChange={handleJsonCheckboxChange}
-            /> &nbsp;
-            Upload JSON
+            /> &nbsp; Upload JSON
           </label>
         </div>
+
+        {/* CSV/Excel file input field */}
+        {isCsvUploadEnabled && (
+          <div>
+            <input type="file" accept=".csv, .xlsx" onChange={handleFileChange} />
+            {selectedFile && (
+              <div className="file-preview">
+                <h4>File Preview:</h4>
+                {filePreview ? (
+                  <div className="preview-content">
+                    {Array.isArray(filePreview) && filePreview.length > 0 ? (
+                      <table cellSpacing={0} cellPadding={3}>
+                        <thead>
+                          <tr>
+                            {Object.keys(filePreview[0] || {}).map((key) => (
+                              <th key={key}>{key}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filePreview.map((row, index) => (
+                            <tr key={index}>
+                              {Object.values(row).map((value, idx) => (
+                                <td key={idx}>
+                                  {value !== undefined ? value : "-"}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <p>No data available in CSV</p>
+                    )}
+                  </div>
+                ) : (
+                  <p>No preview available</p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* JSON input fields (URL and Token) */}
+        {isJsonUploadEnabled && (
+          <div>
+            <div>
+              <label>Enter JSON URL:</label>
+              <input
+                type="text"
+                value={json}
+                onChange={(e) => setJson(e.target.value)}
+                placeholder="Enter your JSON URL"
+              />
+            </div>
+            <div>
+              <label>Enter Token:</label>
+              <input
+                type="text"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                placeholder="Enter your token"
+              />
+            </div>
+          </div>
+        )}
 
         {fileTypeError && <p className="error-message">{fileTypeError}</p>}
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BarChart,
   LineChart,
@@ -20,6 +20,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  LabelList
 } from "recharts";
 import { saveAs } from "file-saver";
 import {
@@ -31,25 +32,33 @@ import {
   Radar as RadarIcon,
 } from "lucide-react";
 
-function GraphComponent({ data = [] }) {
+function DBConnectChart({ dbData }) {
   const [chartType, setChartType] = useState("Bar");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [formattedData, setFormattedData] = useState([]);
 
-  // Ensure data is valid by filtering out any undefined or invalid entries
-  const validData = Array.isArray(data) ? data.filter(
-    (item) => item?.Product && item?.["Unit Price"]
-  ) : [];
+  // Transform dbData into a format compatible with Recharts
+  useEffect(() => {
+    if (dbData && dbData.labels && dbData.datasets && dbData.datasets[0].values) {
+      // Assuming the first dataset is always the one we want
+      const data = dbData.labels.map((label, index) => ({
+        label, // Mapping labels from dbData
+        value: dbData.datasets[0].values[index], // Mapping values from the first dataset
+      }));
+      console.log("Formatted Data:", data);
+      setFormattedData(data); // Set formatted data for chart
+    }
+  }, [dbData]);
+  
 
-  const formattedData = validData.map((item) => ({
-    product: item.Product,
-    unitPrice: parseFloat(item["Unit Price"]),
-  }));
+  // Fallback in case dbData is not available or improperly structured
+  if (!formattedData || formattedData.length === 0) return <p>No data available for chart.</p>;
 
   const handleSave = () => {
     const svgElement = document.querySelector(".recharts-wrapper svg");
     const svgData = new XMLSerializer().serializeToString(svgElement);
     const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
-    saveAs(blob, "chart.svg");
+    saveAs(blob, "dbconnect_chart.svg");
   };
 
   const renderChart = () => {
@@ -61,11 +70,11 @@ function GraphComponent({ data = [] }) {
             margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="product" />
-            <YAxis />
+            <XAxis dataKey="label" label={{ value: "Labels", position: "insideBottom", offset: -5 }} />
+            <YAxis label={{ value: "Values", angle: -90, position: "insideLeft" }} />
             <Tooltip />
             <Legend />
-            <Bar dataKey="unitPrice" fill="#28a745" radius={[7, 7, 0, 0]} />
+            <Bar dataKey="value" fill="#28a745" radius={[7, 7, 0, 0]} />
           </BarChart>
         );
       case "Line":
@@ -75,11 +84,11 @@ function GraphComponent({ data = [] }) {
             margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="product" />
-            <YAxis />
+            <XAxis dataKey="label" label={{ value: "Labels", position: "insideBottom", offset: -5 }} />
+            <YAxis label={{ value: "Values", angle: -90, position: "insideLeft" }} />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="unitPrice" stroke="#8884d8" />
+            <Line type="monotone" dataKey="value" stroke="#8884d8" />
           </LineChart>
         );
       case "Area":
@@ -89,11 +98,11 @@ function GraphComponent({ data = [] }) {
             margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="product" />
+            <XAxis dataKey="label" />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Area type="monotone" dataKey="unitPrice" fill="#8884d8" />
+            <Area type="monotone" dataKey="value" fill="#8884d8" stroke="#8884d8" />
           </AreaChart>
         );
       case "Pie":
@@ -101,18 +110,15 @@ function GraphComponent({ data = [] }) {
           <PieChart>
             <Pie
               data={formattedData}
-              dataKey="unitPrice"
-              nameKey="product"
+              dataKey="value"
+              nameKey="label"
               cx="50%"
               cy="50%"
               outerRadius={100}
               fill="#82ca9d"
             >
               {formattedData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={index % 2 === 0 ? "#8884d8" : "#82ca9d"}
-                />
+                <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#8884d8" : "#82ca9d"} />
               ))}
             </Pie>
             <Tooltip />
@@ -120,22 +126,11 @@ function GraphComponent({ data = [] }) {
         );
       case "Radar":
         return (
-          <RadarChart
-            outerRadius={90}
-            width={500}
-            height={500}
-            data={formattedData}
-          >
+          <RadarChart outerRadius={90} data={formattedData}>
             <PolarGrid />
-            <PolarAngleAxis dataKey="product" />
+            <PolarAngleAxis dataKey="label" />
             <PolarRadiusAxis />
-            <Radar
-              name="Unit Price"
-              dataKey="unitPrice"
-              stroke="#8884d8"
-              fill="#8884d8"
-              fillOpacity={0.6}
-            />
+            <Radar name="Value" dataKey="value" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
             <Legend />
           </RadarChart>
         );
@@ -153,13 +148,10 @@ function GraphComponent({ data = [] }) {
   ];
 
   return (
-    <div className="graph-container  h-96">
+    <div className="dbconnect-graph-container">
       <div className="chart-controls">
         <div className="custom-dropdown">
-          <button
-            className="dropdown-button"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-          >
+          <button className="dropdown-button" onClick={() => setDropdownOpen(!dropdownOpen)}>
             {chartOptions.find((opt) => opt.value === chartType).icon}
           </button>
           {dropdownOpen && (
@@ -171,9 +163,7 @@ function GraphComponent({ data = [] }) {
                     setChartType(option.value);
                     setDropdownOpen(false);
                   }}
-                  className={`dropdown-item ${
-                    chartType === option.value ? "selected" : ""
-                  }`}
+                  className={`dropdown-item ${chartType === option.value ? "selected" : ""}`}
                 >
                   {option.icon}
                 </li>
@@ -185,12 +175,11 @@ function GraphComponent({ data = [] }) {
           <Save size={20} />
         </button>
       </div>
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={400}>
         {renderChart()}
       </ResponsiveContainer>
-      <p>Summary: All categories data displayed according to value + scatter</p>
     </div>
   );
 }
 
-export default GraphComponent;
+export default DBConnectChart;

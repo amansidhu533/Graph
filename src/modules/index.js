@@ -41,8 +41,14 @@ export const fetchFileData = async (file) => {
         },
       }
     );
-    console.log("Data:", response.data.message);
-    return response.data.message;
+    console.log("Full Response:", response);
+    const parsedMessage =
+      typeof response.data.message === "string"
+        ? JSON.parse(response.data.message)
+        : response.data.message;
+    console.log("Parsed Message:", parsedMessage);
+
+    return parsedMessage;
   } catch (error) {
     console.error("Error uploading file:", error);
     throw error;
@@ -81,6 +87,32 @@ export const fetchQueryResponse = async (
       `Error querying data: ${
         error.response ? error.response.data.message : error.message
       }`
+    );
+    throw error;
+  }
+};
+
+export const fetchDBData = async (tableName) => {
+  const requestBody = {
+    table_name: tableName,
+  };
+
+  try {
+    const response = await axiosInstance.post(APIs.connectDB, requestBody, {
+      headers: {
+        Authorization: "token fab97082097b4f1:a5a4f38d3d47e50",
+        "Content-Type": "application/json",
+        Cookie:
+          "full_name=Guest; sid=Guest; system_user=no; user_id=Guest; user_image=",
+      },
+    });
+
+    const chartData = response.data;  
+    return chartData;
+  } catch (error) {
+    console.error(
+      "Error connecting to the database:",
+      error.response?.data || error.message
     );
     throw error;
   }

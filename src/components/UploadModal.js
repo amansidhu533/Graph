@@ -136,7 +136,7 @@ function UploadModal({
   return (
     <div className="modal-overlay">
       <div className="modal-content1">
-        <h3>Upload CSV/Excel or JSON</h3>
+        <h2>Upload CSV/Excel or JSON</h2>
         
         {/* Checkboxes for CSV/Excel and JSON */}
         <div>
